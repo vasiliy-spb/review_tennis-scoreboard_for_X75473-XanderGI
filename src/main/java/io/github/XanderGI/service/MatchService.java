@@ -4,14 +4,11 @@ import io.github.XanderGI.entity.Player;
 import io.github.XanderGI.exception.InvalidMatchException;
 import io.github.XanderGI.model.MatchScore;
 import io.github.XanderGI.model.PlayerScore;
-import io.github.XanderGI.model.Point;
 import io.github.XanderGI.repository.OngoingMatchRepository;
 import io.github.XanderGI.repository.PlayerRepository;
 import lombok.RequiredArgsConstructor;
 
 import java.util.UUID;
-
-// todo: нет констистентости между нейминогом репозиториев? один PlayerRepository, а второй должен быть MatchRepository
 
 @RequiredArgsConstructor
 public class MatchService {
@@ -29,14 +26,11 @@ public class MatchService {
         Player playerTwo = playerRepository.findByName(nameTwo)
                 .orElseGet(() -> playerRepository.save(nameTwo));
 
-        PlayerScore playerScoreOne = new PlayerScore(Point.ZERO, 0,0);
-        PlayerScore playerScoreTwo = new PlayerScore(Point.ZERO, 0,0);
-
         MatchScore matchScore = new MatchScore(
                 playerOne,
                 playerTwo,
-                playerScoreOne,
-                playerScoreTwo
+                PlayerScore.matchStart(),
+                PlayerScore.matchStart()
         );
 
         return ongoingMatchRepository.add(matchScore);
