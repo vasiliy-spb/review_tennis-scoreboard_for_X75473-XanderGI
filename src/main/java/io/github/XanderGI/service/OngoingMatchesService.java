@@ -2,16 +2,18 @@ package io.github.XanderGI.service;
 
 import io.github.XanderGI.entity.Player;
 import io.github.XanderGI.exception.InvalidMatchException;
+import io.github.XanderGI.exception.MatchNotFoundException;
 import io.github.XanderGI.model.MatchScore;
 import io.github.XanderGI.model.PlayerScore;
 import io.github.XanderGI.repository.OngoingMatchRepository;
 import io.github.XanderGI.repository.PlayerRepository;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @RequiredArgsConstructor
-public class MatchService {
+public class OngoingMatchesService {
     private final OngoingMatchRepository ongoingMatchRepository;
     private final PlayerRepository playerRepository;
 
@@ -34,5 +36,13 @@ public class MatchService {
         );
 
         return ongoingMatchRepository.add(matchScore);
+    }
+
+    public Optional<MatchScore> get(UUID matchId) {
+        return ongoingMatchRepository.get(matchId);
+    }
+
+    public void remove(UUID matchId) {
+        ongoingMatchRepository.remove(matchId);
     }
 }

@@ -1,9 +1,7 @@
 package io.github.XanderGI.servlet;
 
 import io.github.XanderGI.exception.InvalidMatchException;
-import io.github.XanderGI.repository.OngoingMatchRepository;
-import io.github.XanderGI.repository.PlayerRepository;
-import io.github.XanderGI.service.MatchService;
+import io.github.XanderGI.service.OngoingMatchesService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -16,13 +14,11 @@ import java.util.UUID;
 
 @WebServlet("/new-match")
 public class NewMatchServlet extends HttpServlet {
-    private MatchService matchService;
+    private OngoingMatchesService ongoingMatchesService;
 
     @Override
     public void init() {
-        OngoingMatchRepository ongoingMatchRepository = new OngoingMatchRepository();
-        PlayerRepository playerRepository = new PlayerRepository();
-        matchService = new MatchService(ongoingMatchRepository, playerRepository);
+        ongoingMatchesService = (OngoingMatchesService) getServletContext().getAttribute("ongoingMatchesService");
     }
 
     @Override
@@ -42,12 +38,12 @@ public class NewMatchServlet extends HttpServlet {
         }
 
         try {
-            UUID uuid = matchService.create(nameOne, nameTwo);
+            UUID uuid = ongoingMatchesService.create(nameOne, nameTwo);
             String site = "/match-score?uuid=";
             resp.sendRedirect(site + uuid);
         } catch (InvalidMatchException e) {
             req.setAttribute("error", e.getMessage());
-            req.getRequestDispatcher("/new-match.jsp").forward(req,resp);
+            req.getRequestDispatcher("/new-match.jsp").forward(req, resp);
         }
 
     }
