@@ -2,6 +2,7 @@ package io.github.XanderGI.servlet;
 
 import io.github.XanderGI.exception.MatchNotFoundException;
 import io.github.XanderGI.model.MatchScore;
+import io.github.XanderGI.service.FinishedMatchesPersistenceService;
 import io.github.XanderGI.service.MatchScoreCalculationService;
 import io.github.XanderGI.service.OngoingMatchesService;
 import jakarta.servlet.ServletException;
@@ -17,11 +18,13 @@ import java.util.UUID;
 public class MatchScoreServlet extends HttpServlet {
     private MatchScoreCalculationService calculationMatchService;
     private OngoingMatchesService ongoingMatchesService;
+    private FinishedMatchesPersistenceService finishedMatchesService;
 
     @Override
     public void init() {
         calculationMatchService = (MatchScoreCalculationService) getServletContext().getAttribute("calculationMatchService");
         ongoingMatchesService = (OngoingMatchesService) getServletContext().getAttribute("ongoingMatchesService");
+        finishedMatchesService = (FinishedMatchesPersistenceService) getServletContext().getAttribute("finishedMatchesService");
     }
 
     @Override

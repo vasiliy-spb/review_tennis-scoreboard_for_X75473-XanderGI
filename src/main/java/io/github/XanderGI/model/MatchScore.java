@@ -2,7 +2,9 @@ package io.github.XanderGI.model;
 
 import io.github.XanderGI.entity.Player;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
+@Getter
 @AllArgsConstructor
 public class MatchScore {
     private final static int GAMES_TO_WIN_SET = 6;
@@ -35,7 +37,7 @@ public class MatchScore {
             loser = playerScoreOne;
         }
 
-        if (isDrawByGames()) {
+        if (isTieBreak()) {
             updateTieBreakScore(winner, loser);
         } else {
             updateScore(winner, loser);
@@ -89,7 +91,7 @@ public class MatchScore {
         }
     }
 
-    private boolean isDrawByGames() {
+    public boolean isTieBreak() {
         return playerScoreOne.getGame().equals(GAMES_TO_WIN_SET) && playerScoreTwo.getGame().equals(GAMES_TO_WIN_SET);
     }
 

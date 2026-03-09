@@ -1,7 +1,14 @@
 package io.github.XanderGI.model;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@Getter
+@RequiredArgsConstructor
 public enum Point {
-    ZERO, FIFTEEN, THIRTY, FORTY, ADVANTAGE;
+    ZERO("0"), FIFTEEN("15"), THIRTY("30"), FORTY("40"), ADVANTAGE("AD");
+
+    private final String value;
 
     public Point next() {
         return switch (this) {
