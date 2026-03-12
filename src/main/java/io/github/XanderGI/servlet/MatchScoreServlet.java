@@ -58,8 +58,19 @@ public class MatchScoreServlet extends HttpServlet {
             UUID matchId = UUID.fromString(stringMatchId);
             Integer playerId = Integer.valueOf(stringPlayedId);
 
-            calculationMatchService.addPoint(matchId, playerId);
-            resp.sendRedirect("/match-score?uuid=" + matchId);
+            MatchScore matchScore = ongoingMatchesService.get(matchId)
+                    .orElseThrow(() -> new MatchNotFoundException("Match not found"));
+
+            calculationMatchService.addPoint(matchScore, playerId);
+
+            if (matchScore.isMatchOver()) {
+                finishedMatchesService.save(matchScore);
+                ongoingMatchesService.remove(matchId);
+                req.setAttribute("match", matchScore);
+                req.getRequestDispatcher("/match-score.jsp").forward(req, resp);
+            } else {
+                resp.sendRedirect("/match-score?uuid=" + matchId);
+            }
         } catch (NumberFormatException e) {
             req.setAttribute("error", "Incorrect playerId from path");
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);

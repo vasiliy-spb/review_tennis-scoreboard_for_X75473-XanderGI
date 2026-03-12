@@ -21,7 +21,7 @@ public class ContextListener implements ServletContextListener {
 
         OngoingMatchesService ongoingMatchesService = new OngoingMatchesService(ongoingMatchRepository, playerRepository);
         FinishedMatchesPersistenceService finishedMatchesService = new FinishedMatchesPersistenceService();
-        MatchScoreCalculationService calculationMatchService = new MatchScoreCalculationService(ongoingMatchesService, finishedMatchesService);
+        MatchScoreCalculationService calculationMatchService = new MatchScoreCalculationService();
 
         sce.getServletContext().setAttribute("ongoingMatchesService", ongoingMatchesService);
         sce.getServletContext().setAttribute("finishedMatchesService", finishedMatchesService);
