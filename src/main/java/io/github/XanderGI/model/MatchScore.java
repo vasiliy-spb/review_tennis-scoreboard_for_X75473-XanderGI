@@ -4,6 +4,8 @@ import io.github.XanderGI.entity.Player;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.Optional;
+
 @Getter
 @AllArgsConstructor
 public class MatchScore {
@@ -19,6 +21,16 @@ public class MatchScore {
 
     public boolean isMatchOver() {
         return playerScoreOne.getSet().equals(SETS_TO_WIN_MATCH) || playerScoreTwo.getSet().equals(SETS_TO_WIN_MATCH);
+    }
+
+    public Optional<Player> getWinner() {
+        if (playerScoreOne.getSet().equals(SETS_TO_WIN_MATCH)) {
+            return Optional.of(playerOne);
+        } else if (playerScoreTwo.getSet().equals(SETS_TO_WIN_MATCH)) {
+            return Optional.of(playerTwo);
+        }
+
+        return Optional.empty();
     }
 
     public void pointWonBy(Integer playerId) {
