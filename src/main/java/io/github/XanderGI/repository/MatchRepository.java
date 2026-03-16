@@ -9,43 +9,31 @@ import java.util.List;
 
 public class MatchRepository {
     private static final String FIND_ALL_MATCHES = "FROM Match ";
-    private static final String FIND_COUNT_ALL_MATCHES = "SELECT COUNT(*) FROM Match ";
+    private static final String COUNT_ALL_MATCHES = "SELECT COUNT(*) FROM Match ";
     private static final String FILTER_BY_NAME_CLAUSE = "WHERE playerOne.name = :playerName OR playerTwo.name = :playerName";
 
     public List<Match> findMatches(int offset, int limit, String filterName) {
         String hql = buildHql(FIND_ALL_MATCHES, filterName);
 
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            session.beginTransaction();
+        Session session = HibernateUtil.getSession();
 
-            Query<Match> query = session.createQuery(hql, Match.class);
+        Query<Match> query = session.createQuery(hql, Match.class);
+        applyFilterParameter(query, filterName);
+        List<Match> matches = query.setFirstResult(offset).setMaxResults(limit).list();
 
-            applyFilterParameter(query, filterName);
-
-            List<Match> matches = query.setFirstResult(offset).setMaxResults(limit).list();
-
-            session.getTransaction().commit();
-
-            return matches;
-        }
+        return matches;
     }
 
     public Long countByPlayerName(String filterName) {
-        String hql = buildHql(FIND_COUNT_ALL_MATCHES, filterName);
+        String hql = buildHql(COUNT_ALL_MATCHES, filterName);
 
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            session.beginTransaction();
+        Session session = HibernateUtil.getSession();
 
-            Query<Long> query = session.createQuery(hql, Long.class);
+        Query<Long> query = session.createQuery(hql, Long.class);
+        applyFilterParameter(query, filterName);
+        Long countOfMatches = query.getSingleResult();
 
-            applyFilterParameter(query, filterName);
-
-            Long countOfPage = query.getSingleResult();
-
-            session.getTransaction().commit();
-
-            return countOfPage;
-        }
+        return countOfMatches;
     }
 
     private String buildHql(String baseQuery, String filterName) {

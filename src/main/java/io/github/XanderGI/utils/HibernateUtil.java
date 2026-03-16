@@ -5,6 +5,7 @@ import io.github.XanderGI.entity.Player;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
@@ -23,5 +24,9 @@ public class HibernateUtil {
         if (sessionFactory != null) {
             sessionFactory.close();
         }
+    }
+
+    public static Session getSession() {
+        return sessionFactory.getCurrentSession();
     }
 }
