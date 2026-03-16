@@ -8,24 +8,21 @@ import org.hibernate.query.Query;
 import java.util.List;
 
 public class MatchRepository {
-    public List<Match> findMatches(int offset, int limit, String filterName) {
-        boolean isFilterSet = filterName != null && !filterName.isBlank();
-        String hql = "FROM Match";
+    private static final String FIND_ALL_MATCHES = "FROM Match ";
+    private static final String FIND_COUNT_ALL_MATCHES = "SELECT COUNT(*) FROM Match ";
+    private static final String FILTER_BY_NAME_CLAUSE = "WHERE playerOne.name = :playerName OR playerTwo.name = :playerName";
 
-        if (isFilterSet) {
-            hql = "FROM Match WHERE playerOne.name = :playerName OR playerTwo.name = :playerName";
-        }
+    public List<Match> findMatches(int offset, int limit, String filterName) {
+        String hql = buildHql(FIND_ALL_MATCHES, filterName);
 
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             session.beginTransaction();
 
             Query<Match> query = session.createQuery(hql, Match.class);
 
-            if (isFilterSet) {
-                query.setParameter("playerName", filterName);
-            }
+            applyFilterParameter(query, filterName);
 
-            List<Match> matches = query.setFirstResult(offset).setMaxResults(limit).getResultList();
+            List<Match> matches = query.setFirstResult(offset).setMaxResults(limit).list();
 
             session.getTransaction().commit();
 
@@ -34,27 +31,37 @@ public class MatchRepository {
     }
 
     public Long countByPlayerName(String filterName) {
-        boolean isFilterSet = filterName != null && !filterName.isBlank();
-        String hql = "SELECT COUNT(*) FROM Match";
-
-        if (isFilterSet) {
-            hql = "SELECT COUNT(*) FROM Match WHERE playerOne.name = :playerName OR playerTwo.name = :playerName";
-        }
+        String hql = buildHql(FIND_COUNT_ALL_MATCHES, filterName);
 
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             session.beginTransaction();
 
             Query<Long> query = session.createQuery(hql, Long.class);
 
-            if (isFilterSet) {
-                query.setParameter("playerName", filterName);
-            }
+            applyFilterParameter(query, filterName);
 
             Long countOfPage = query.getSingleResult();
 
             session.getTransaction().commit();
 
             return countOfPage;
+        }
+    }
+
+    private String buildHql(String baseQuery, String filterName) {
+        boolean isFilterSet = filterName != null && !filterName.isBlank();
+        String hql = baseQuery;
+
+        if (isFilterSet) {
+            hql += FILTER_BY_NAME_CLAUSE;
+        }
+
+        return hql;
+    }
+
+    private void applyFilterParameter(Query<?> query, String filterName) {
+        if (filterName != null && !filterName.isBlank()) {
+            query.setParameter("playerName", filterName);
         }
     }
 }
