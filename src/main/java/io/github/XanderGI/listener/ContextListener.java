@@ -1,5 +1,6 @@
 package io.github.XanderGI.listener;
 
+import io.github.XanderGI.repository.MatchRepository;
 import io.github.XanderGI.repository.OngoingMatchRepository;
 import io.github.XanderGI.repository.PlayerRepository;
 import io.github.XanderGI.service.FinishedMatchesPersistenceService;
@@ -18,9 +19,10 @@ public class ContextListener implements ServletContextListener {
 
         OngoingMatchRepository ongoingMatchRepository = new OngoingMatchRepository();
         PlayerRepository playerRepository = new PlayerRepository();
+        MatchRepository matchRepository = new MatchRepository();
 
         OngoingMatchesService ongoingMatchesService = new OngoingMatchesService(ongoingMatchRepository, playerRepository);
-        FinishedMatchesPersistenceService finishedMatchesService = new FinishedMatchesPersistenceService();
+        FinishedMatchesPersistenceService finishedMatchesService = new FinishedMatchesPersistenceService(matchRepository);
         MatchScoreCalculationService calculationMatchService = new MatchScoreCalculationService();
 
         sce.getServletContext().setAttribute("ongoingMatchesService", ongoingMatchesService);
