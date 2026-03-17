@@ -214,6 +214,9 @@ footer {
     background-color: #42a7f5;
     color: #fff;
     cursor: pointer;
+    display: inline-block;
+    text-decoration: none;
+    text-align: center;
 }
 
 /* Current match */
