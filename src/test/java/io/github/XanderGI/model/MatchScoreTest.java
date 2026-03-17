@@ -7,8 +7,8 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class MatchScoreTest {
-    private final static Integer playerOneId = 1;
-    private final static Integer playerTwoId = 2;
+    private final static Integer PLAYER_ONE_ID = 1;
+    private final static Integer PLAYER_TWO_ID = 2;
     private Player playerOne;
     private Player playerTwo;
     private PlayerScore playerScoreOne;
@@ -17,8 +17,8 @@ class MatchScoreTest {
 
     @BeforeEach
     void setUp() {
-        playerOne = new Player(playerOneId, "Alex");
-        playerTwo = new Player(playerTwoId, "Xander");
+        playerOne = new Player(PLAYER_ONE_ID, "Alex");
+        playerTwo = new Player(PLAYER_TWO_ID, "Xander");
 
         playerScoreOne = PlayerScore.matchStart();
         playerScoreTwo = PlayerScore.matchStart();
@@ -33,9 +33,9 @@ class MatchScoreTest {
 
     @Test
     void shouldIncreaseGameCountWhenPlayerWinsPointAtFortyZero() {
-        winPoints(playerOneId, 3);
+        winPoints(PLAYER_ONE_ID, 3);
 
-        matchScore.pointWonBy(playerOneId);
+        matchScore.pointWonBy(PLAYER_ONE_ID);
 
         assertScore(playerScoreOne, Point.ZERO, 1, 0);
         assertScore(playerScoreTwo, Point.ZERO, 0, 0);
@@ -43,10 +43,10 @@ class MatchScoreTest {
 
     @Test
     void shouldGetAdvantageWhenPlayerWinsPointAtFortyForty() {
-        winPoints(playerOneId, 3);
-        winPoints(playerTwoId, 3);
+        winPoints(PLAYER_ONE_ID, 3);
+        winPoints(PLAYER_TWO_ID, 3);
 
-        matchScore.pointWonBy(playerOneId);
+        matchScore.pointWonBy(PLAYER_ONE_ID);
 
         assertScore(playerScoreOne, Point.ADVANTAGE, 0, 0);
         assertScore(playerScoreTwo, Point.FORTY, 0, 0);
@@ -54,10 +54,10 @@ class MatchScoreTest {
 
     @Test
     void shouldReturnToDeuceWhenPlayerWinsPointAgainstAdvantage() {
-        winPoints(playerOneId, 3);
-        winPoints(playerTwoId, 4);
+        winPoints(PLAYER_ONE_ID, 3);
+        winPoints(PLAYER_TWO_ID, 4);
 
-        matchScore.pointWonBy(playerOneId);
+        matchScore.pointWonBy(PLAYER_ONE_ID);
 
         assertScore(playerScoreOne, Point.FORTY, 0, 0);
         assertScore(playerScoreTwo, Point.FORTY, 0, 0);
@@ -65,10 +65,10 @@ class MatchScoreTest {
 
     @Test
     void shouldIncreaseSetCountWhenPlayerWinsSixGames() {
-        winGames(playerOneId, 5);
-        winPoints(playerOneId, 3);
+        winGames(PLAYER_ONE_ID, 5);
+        winPoints(PLAYER_ONE_ID, 3);
 
-        matchScore.pointWonBy(playerOneId);
+        matchScore.pointWonBy(PLAYER_ONE_ID);
 
         assertScore(playerScoreOne, Point.ZERO, 0, 1);
         assertScore(playerScoreTwo, Point.ZERO, 0, 0);
@@ -76,10 +76,10 @@ class MatchScoreTest {
 
     @Test
     void shouldStartNewGameInNewSetWhenPointWonAfterWinningSet() {
-        winSets(playerOneId,1);
-        winPoints(playerOneId, 4);
+        winSets(PLAYER_ONE_ID, 1);
+        winPoints(PLAYER_ONE_ID, 4);
 
-        matchScore.pointWonBy(playerOneId);
+        matchScore.pointWonBy(PLAYER_ONE_ID);
 
         assertScore(playerScoreOne, Point.FIFTEEN, 1, 1);
         assertScore(playerScoreTwo, Point.ZERO, 0, 0);
@@ -87,12 +87,12 @@ class MatchScoreTest {
 
     @Test
     void shouldStartTieBreakWhenPlayerWinsGameAtSixAll() {
-        winGames(playerOneId, 5);
-        winGames(playerTwoId, 5);
-        winGames(playerOneId, 1);
-        winPoints(playerTwoId, 3);
+        winGames(PLAYER_ONE_ID, 5);
+        winGames(PLAYER_TWO_ID, 5);
+        winGames(PLAYER_ONE_ID, 1);
+        winPoints(PLAYER_TWO_ID, 3);
 
-        matchScore.pointWonBy(playerTwoId);
+        matchScore.pointWonBy(PLAYER_TWO_ID);
 
         assertTrue(matchScore.isTieBreak());
         assertEquals(0, playerScoreOne.getTieBreakPoint());
@@ -103,9 +103,9 @@ class MatchScoreTest {
     void shouldWinSetWhenPlayerWinsSevenTieBreakPoints() {
         reachSixAll();
 
-        winPoints(playerOneId, 6);
+        winPoints(PLAYER_ONE_ID, 6);
 
-        matchScore.pointWonBy(playerOneId);
+        matchScore.pointWonBy(PLAYER_ONE_ID);
 
         assertFalse(matchScore.isTieBreak());
         assertEquals(0, playerScoreOne.getTieBreakPoint());
@@ -118,10 +118,10 @@ class MatchScoreTest {
     void shouldWinSetWhenPlayerWinsPointAtSixAllInTieBreak() {
         reachSixAll();
 
-        winPoints(playerOneId, 6);
-        winPoints(playerTwoId, 6);
+        winPoints(PLAYER_ONE_ID, 6);
+        winPoints(PLAYER_TWO_ID, 6);
 
-        matchScore.pointWonBy(playerOneId);
+        matchScore.pointWonBy(PLAYER_ONE_ID);
 
         assertFalse(matchScore.isTieBreak());
         assertEquals(0, playerScoreOne.getTieBreakPoint());
@@ -132,11 +132,11 @@ class MatchScoreTest {
 
     @Test
     void shouldWinMatchWhenPlayerWinsTwoSets() {
-        winSets(playerOneId, 1);
-        winGames(playerOneId, 5);
-        winPoints(playerOneId, 3);
+        winSets(PLAYER_ONE_ID, 1);
+        winGames(PLAYER_ONE_ID, 5);
+        winPoints(PLAYER_ONE_ID, 3);
 
-        matchScore.pointWonBy(playerOneId);
+        matchScore.pointWonBy(PLAYER_ONE_ID);
 
         assertTrue(matchScore.isMatchOver());
         assertScore(playerScoreOne, Point.ZERO, 0, 2);
@@ -151,10 +151,10 @@ class MatchScoreTest {
     }
 
     private void reachSixAll() {
-        winGames(playerOneId, 5);
-        winGames(playerTwoId, 5);
-        winGames(playerOneId, 1);
-        winGames(playerTwoId, 1);
+        winGames(PLAYER_ONE_ID, 5);
+        winGames(PLAYER_TWO_ID, 5);
+        winGames(PLAYER_ONE_ID, 1);
+        winGames(PLAYER_TWO_ID, 1);
     }
 
     private void winSets(Integer playerId, int countSets) {
