@@ -45,7 +45,7 @@ public class MatchScoreServlet extends HttpServlet {
         } catch (MatchNotFoundException e) {
             req.setAttribute("error", e.getMessage());
             resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            req .getRequestDispatcher("/new-match.jsp").forward(req, resp);
+            req.getRequestDispatcher("/new-match.jsp").forward(req, resp);
         }
     }
 
@@ -72,17 +72,17 @@ public class MatchScoreServlet extends HttpServlet {
                 resp.sendRedirect("/match-score?uuid=" + matchId);
             }
         } catch (NumberFormatException e) {
-            req.setAttribute("error", "Incorrect playerId from path");
+            req.setAttribute("error", "Invalid playerId format");
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             req.getRequestDispatcher("/new-match.jsp").forward(req, resp);
         } catch (IllegalArgumentException e) {
-            req.setAttribute("error", "Incorrect matchId from path");
+            req.setAttribute("error", "Invalid matchId format");
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             req.getRequestDispatcher("/new-match.jsp").forward(req, resp);
         } catch (MatchNotFoundException e) {
             req.setAttribute("error", e.getMessage());
             resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            req .getRequestDispatcher("/new-match.jsp").forward(req, resp);
+            req.getRequestDispatcher("/new-match.jsp").forward(req, resp);
         }
     }
 }
