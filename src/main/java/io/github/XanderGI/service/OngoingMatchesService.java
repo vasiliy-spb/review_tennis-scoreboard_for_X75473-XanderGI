@@ -2,7 +2,7 @@ package io.github.XanderGI.service;
 
 import io.github.XanderGI.entity.Player;
 import io.github.XanderGI.exception.InvalidMatchException;
-import io.github.XanderGI.exception.MatchNotFoundException;
+import io.github.XanderGI.exception.PlayerPersistenceException;
 import io.github.XanderGI.model.MatchScore;
 import io.github.XanderGI.model.PlayerScore;
 import io.github.XanderGI.repository.OngoingMatchRepository;
@@ -18,15 +18,12 @@ public class OngoingMatchesService {
     private final PlayerRepository playerRepository;
 
     public UUID create(String nameOne, String nameTwo) {
-        if (nameOne.equals(nameTwo)) {
+        if (nameOne.equalsIgnoreCase(nameTwo)) {
             throw new InvalidMatchException("The names of the players must be different");
         }
 
-        Player playerOne = playerRepository.findByName(nameOne)
-                .orElseGet(() -> playerRepository.save(nameOne));
-
-        Player playerTwo = playerRepository.findByName(nameTwo)
-                .orElseGet(() -> playerRepository.save(nameTwo));
+        Player playerOne = getOrCreatePlayer(nameOne);
+        Player playerTwo = getOrCreatePlayer(nameTwo);
 
         MatchScore matchScore = new MatchScore(
                 playerOne,
@@ -44,5 +41,15 @@ public class OngoingMatchesService {
 
     public void remove(UUID matchId) {
         ongoingMatchRepository.remove(matchId);
+    }
+
+    private Player getOrCreatePlayer(String name) {
+        try {
+            return playerRepository.findByName(name)
+                    .orElseGet(() -> playerRepository.save(name));
+        } catch (PlayerPersistenceException e) {
+            return playerRepository.findByName(name)
+                    .orElseThrow(() -> new PlayerPersistenceException("Failed to save or retrieve player:" + name, e));
+        }
     }
 }

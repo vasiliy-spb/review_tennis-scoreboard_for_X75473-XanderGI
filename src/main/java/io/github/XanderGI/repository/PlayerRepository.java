@@ -12,13 +12,10 @@ public class PlayerRepository {
     public Optional<Player> findByName(String name) {
         String hql = "FROM Player WHERE name = :playerName";
         try (Session session = HibernateUtil.getSessionFactory().openSession()){
-            session.beginTransaction();
 
             Optional<Player> player = session.createQuery(hql, Player.class)
                     .setParameter("playerName", name)
                     .uniqueResultOptional();
-
-            session.getTransaction().commit();
 
             return player;
         }
