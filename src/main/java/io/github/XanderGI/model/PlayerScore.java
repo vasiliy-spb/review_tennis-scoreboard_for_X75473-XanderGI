@@ -16,39 +16,35 @@ public class PlayerScore {
         return new PlayerScore(Point.ZERO, 0, 0, 0);
     }
 
-    public void incrementPoint() {
+    protected void incrementPoint() {
         point = point.next();
     }
 
-    public void decrementPoint() {
+    protected void decrementPoint() {
         point = point.prev();
     }
 
-    public void clearPoints() {
+    protected void clearPoints() {
         point = Point.ZERO;
     }
 
-    public void incrementGame() {
+    protected void incrementGame() {
         game++;
     }
 
-    public void clearGames() {
+    protected void clearGames() {
         game = 0;
     }
 
-    public void incrementSet() {
+    protected void incrementSet() {
         set++;
     }
 
-    public void clearSet() {
-        set = 0;
-    }
-
-    public void incrementTieBreakPoint() {
+    protected void incrementTieBreakPoint() {
         tieBreakPoint++;
     }
 
-    public void clearTieBreakPoints() {
+    protected void clearTieBreakPoints() {
         tieBreakPoint = 0;
     }
 }

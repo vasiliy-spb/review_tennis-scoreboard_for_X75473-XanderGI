@@ -10,19 +10,20 @@ public enum Point {
 
     private final String value;
 
-    public Point next() {
+    Point next() {
         return switch (this) {
             case ZERO -> FIFTEEN;
             case FIFTEEN -> THIRTY;
             case THIRTY -> FORTY;
             case FORTY -> ADVANTAGE;
-            case ADVANTAGE -> throw  new IllegalArgumentException("The score can't be more than an advantage");
+            case ADVANTAGE -> throw new IllegalArgumentException("The score can't be more than an advantage");
         };
     }
 
-    public Point prev() {
+    Point prev() {
         return switch (this) {
-            case ZERO, FIFTEEN, THIRTY, FORTY -> throw  new IllegalArgumentException("The score of less than forty cannot decrease");
+            case ZERO, FIFTEEN, THIRTY, FORTY ->
+                    throw new IllegalArgumentException("The score of less than forty cannot decrease");
             case ADVANTAGE -> FORTY;
         };
     }
