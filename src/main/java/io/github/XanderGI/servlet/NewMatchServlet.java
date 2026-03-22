@@ -38,7 +38,9 @@ public class NewMatchServlet extends HttpServlet {
         }
 
         try {
-            UUID uuid = ongoingMatchesService.create(nameOne, nameTwo);
+            String firstName = nameOne.strip();
+            String secondName = nameTwo.strip();
+            UUID uuid = ongoingMatchesService.create(firstName, secondName);
             String site = "/match-score?uuid=";
             resp.sendRedirect(site + uuid);
         } catch (InvalidMatchException e) {
