@@ -33,7 +33,7 @@ public class MatchScore {
         return Optional.empty();
     }
 
-    public void pointWonBy(Integer playerId) {
+    public synchronized void pointWonBy(Integer playerId) {
         if (isMatchOver()) {
             return;
         }
