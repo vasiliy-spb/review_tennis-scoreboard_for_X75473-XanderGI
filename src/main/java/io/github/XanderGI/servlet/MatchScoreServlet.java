@@ -33,7 +33,15 @@ public class MatchScoreServlet extends HttpServlet {
         try {
             UUID matchId = UUID.fromString(stringMatchId);
             MatchScore matchScore = ongoingMatchesService.get(matchId)
-                    .orElseThrow(() -> new MatchNotFoundException("Match not found"));
+                    .orElse(null);
+
+            if (matchScore == null) {
+                matchScore = (MatchScore) req.getSession().getAttribute("finishedMatch_" + matchId);
+            }
+
+            if (matchScore == null) {
+                throw new MatchNotFoundException("Match not found");
+            }
 
             req.setAttribute("uuid", matchId);
             req.setAttribute("match", matchScore);
@@ -66,11 +74,10 @@ public class MatchScoreServlet extends HttpServlet {
             if (matchScore.isMatchOver()) {
                 finishedMatchesService.save(matchScore);
                 ongoingMatchesService.remove(matchId);
-                req.setAttribute("match", matchScore);
-                req.getRequestDispatcher("/match-score.jsp").forward(req, resp);
-            } else {
-                resp.sendRedirect("/match-score?uuid=" + matchId);
+                req.getSession().setAttribute("finishedMatch_" + matchId, matchScore);
             }
+
+            resp.sendRedirect("/match-score?uuid=" + matchId);
         } catch (NumberFormatException e) {
             req.setAttribute("error", "Invalid playerId format");
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
