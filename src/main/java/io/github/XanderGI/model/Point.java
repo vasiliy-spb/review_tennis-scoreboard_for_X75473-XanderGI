@@ -16,14 +16,14 @@ public enum Point {
             case FIFTEEN -> THIRTY;
             case THIRTY -> FORTY;
             case FORTY -> ADVANTAGE;
-            case ADVANTAGE -> throw new IllegalArgumentException("The score can't be more than an advantage");
+            case ADVANTAGE -> throw new IllegalStateException("The score can't be more than an advantage");
         };
     }
 
     Point prev() {
         return switch (this) {
             case ZERO, FIFTEEN, THIRTY, FORTY ->
-                    throw new IllegalArgumentException("The score of less than forty cannot decrease");
+                    throw new IllegalStateException("The score of less than forty cannot decrease");
             case ADVANTAGE -> FORTY;
         };
     }
