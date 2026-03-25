@@ -41,12 +41,14 @@ public class MatchScore {
         PlayerScore winner;
         PlayerScore loser;
 
-        if (playerId.equals(playerOne.getId())) {
+        if (playerOne.getId().equals(playerId)) {
             winner = playerScoreOne;
             loser = playerScoreTwo;
-        } else {
+        } else if (playerTwo.getId().equals(playerId)) {
             winner = playerScoreTwo;
             loser = playerScoreOne;
+        } else {
+            throw new IllegalArgumentException("No player with such ID in this match");
         }
 
         if (isTieBreak()) {
