@@ -10,8 +10,8 @@ import org.hibernate.query.Query;
 import java.util.List;
 
 public class MatchRepository {
-    private static final String FIND_ALL_MATCHES = "FROM Match ";
-    private static final String COUNT_ALL_MATCHES = "SELECT COUNT(*) FROM Match ";
+    private static final String FIND_ALL_MATCHES = "FROM Match";
+    private static final String COUNT_ALL_MATCHES = "SELECT COUNT(*) FROM Match";
     private static final String FILTER_BY_NAME_CLAUSE = "WHERE playerOne.name = :playerName OR playerTwo.name = :playerName";
 
     public void save(MatchScore matchScore) {
@@ -37,9 +37,8 @@ public class MatchRepository {
 
         Query<Match> query = session.createQuery(hql, Match.class);
         applyFilterParameter(query, filterName);
-        List<Match> matches = query.setFirstResult(offset).setMaxResults(limit).list();
 
-        return matches;
+        return query.setFirstResult(offset).setMaxResults(limit).list();
     }
 
     public Long countByPlayerName(String filterName) {
@@ -49,25 +48,25 @@ public class MatchRepository {
 
         Query<Long> query = session.createQuery(hql, Long.class);
         applyFilterParameter(query, filterName);
-        Long countOfMatches = query.getSingleResult();
 
-        return countOfMatches;
+        return query.getSingleResult();
     }
 
     private String buildHql(String baseQuery, String filterName) {
-        boolean isFilterSet = filterName != null && !filterName.isBlank();
-        String hql = baseQuery;
-
-        if (isFilterSet) {
-            hql += FILTER_BY_NAME_CLAUSE;
+        if (hasFilter(filterName)) {
+            return baseQuery + " " + FILTER_BY_NAME_CLAUSE;
         }
 
-        return hql;
+        return baseQuery;
     }
 
     private void applyFilterParameter(Query<?> query, String filterName) {
-        if (filterName != null && !filterName.isBlank()) {
+        if (hasFilter(filterName)) {
             query.setParameter("playerName", filterName);
         }
+    }
+
+    private boolean hasFilter(String filterName) {
+        return filterName != null && !filterName.isBlank();
     }
 }
