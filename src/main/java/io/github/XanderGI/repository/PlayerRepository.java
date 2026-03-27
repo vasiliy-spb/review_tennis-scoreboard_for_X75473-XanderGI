@@ -1,42 +1,26 @@
 package io.github.XanderGI.repository;
 
 import io.github.XanderGI.entity.Player;
-import io.github.XanderGI.exception.PlayerPersistenceException;
-import io.github.XanderGI.utils.HibernateUtil;
+import io.github.XanderGI.util.HibernateUtil;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 
 import java.util.Optional;
 
 public class PlayerRepository {
+    private static final String FIND_BY_NAME = "FROM Player WHERE name = :playerName";
+
     public Optional<Player> findByName(String name) {
-        String hql = "FROM Player WHERE name = :playerName";
-        try (Session session = HibernateUtil.getSessionFactory().openSession()){
+        Session session = HibernateUtil.getSession();
 
-            Optional<Player> player = session.createQuery(hql, Player.class)
-                    .setParameter("playerName", name)
-                    .uniqueResultOptional();
-
-            return player;
-        }
+        return session.createQuery(FIND_BY_NAME, Player.class)
+                .setParameter("playerName", name)
+                .uniqueResultOptional();
     }
 
-    public Player save(String name) {
-        Player player = new Player(null, name);
-        Transaction transaction = null;
+    public Player save(Player player) {
+        Session session = HibernateUtil.getSession();
 
-        try (Session session = HibernateUtil.getSessionFactory().openSession()){
-            transaction = session.beginTransaction();
-
-            session.persist(player);
-
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null && transaction.isActive()) {
-                transaction.rollback();
-            }
-            throw new PlayerPersistenceException("Couldn't save the player", e);
-        }
+        session.persist(player);
 
         return player;
     }
