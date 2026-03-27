@@ -1,4 +1,4 @@
-package io.github.XanderGI.utils;
+package io.github.XanderGI.util;
 
 import io.github.XanderGI.entity.Match;
 import io.github.XanderGI.entity.Player;

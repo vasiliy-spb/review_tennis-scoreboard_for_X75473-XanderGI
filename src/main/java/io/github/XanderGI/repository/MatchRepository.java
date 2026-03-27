@@ -3,7 +3,7 @@ package io.github.XanderGI.repository;
 import io.github.XanderGI.entity.Match;
 import io.github.XanderGI.entity.Player;
 import io.github.XanderGI.model.MatchScore;
-import io.github.XanderGI.utils.HibernateUtil;
+import io.github.XanderGI.util.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 

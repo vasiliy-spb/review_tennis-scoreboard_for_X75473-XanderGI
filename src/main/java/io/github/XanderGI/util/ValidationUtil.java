@@ -1,4 +1,4 @@
-package io.github.XanderGI.utils;
+package io.github.XanderGI.util;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

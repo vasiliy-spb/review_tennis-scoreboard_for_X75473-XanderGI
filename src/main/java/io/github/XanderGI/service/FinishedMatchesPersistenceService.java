@@ -7,7 +7,7 @@ import io.github.XanderGI.exception.MatchPersistenceException;
 import io.github.XanderGI.exception.MatchRepositoryException;
 import io.github.XanderGI.model.MatchScore;
 import io.github.XanderGI.repository.MatchRepository;
-import io.github.XanderGI.utils.HibernateUtil;
+import io.github.XanderGI.util.HibernateUtil;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Session;
 import org.hibernate.Transaction;

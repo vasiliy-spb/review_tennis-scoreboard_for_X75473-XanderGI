@@ -2,7 +2,7 @@ package io.github.XanderGI.servlet;
 
 import io.github.XanderGI.dto.MatchesPageDto;
 import io.github.XanderGI.service.FinishedMatchesPersistenceService;
-import io.github.XanderGI.utils.ValidationUtil;
+import io.github.XanderGI.util.ValidationUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
