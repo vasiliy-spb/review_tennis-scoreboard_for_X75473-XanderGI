@@ -5,12 +5,10 @@ import io.github.XanderGI.entity.Match;
 import io.github.XanderGI.exception.MatchNotFinishedException;
 import io.github.XanderGI.exception.MatchPersistenceException;
 import io.github.XanderGI.exception.MatchRepositoryException;
+import io.github.XanderGI.infrastructure.transaction.TransactionRunner;
 import io.github.XanderGI.model.MatchScore;
 import io.github.XanderGI.repository.MatchRepository;
-import io.github.XanderGI.util.HibernateUtil;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
 
 import java.util.List;
 
@@ -18,56 +16,50 @@ import java.util.List;
 public class FinishedMatchesPersistenceService {
     private static final int PAGE_SIZE = 5;
     private final MatchRepository matchRepository;
+    private final TransactionRunner transactionRunner;
 
     public void save(MatchScore matchScore) {
         if (!matchScore.isMatchOver()) {
             throw new MatchNotFinishedException("Match not finished for finishMatch");
         }
 
-        Transaction transaction = null;
         try {
-            Session session = HibernateUtil.getSession();
-            transaction = session.beginTransaction();
-
-            matchRepository.save(matchScore);
-
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null && transaction.isActive()) {
-                transaction.rollback();
-            }
-
+            transactionRunner.execute(() -> matchRepository.save(matchScore));
+        } catch (RuntimeException e) {
             throw new MatchPersistenceException("Couldn't finishMatch match", e);
         }
     }
 
     public MatchesPageDto getMatchesPage(int page, String filterName) {
-        Transaction transaction = null;
+        if (page < 1) {
+            throw new IllegalArgumentException("Page must be positive");
+        }
 
         try {
-            int offset = (page - 1) * PAGE_SIZE;
+            int offset = calculateOffset(page);
 
-            Session session = HibernateUtil.getSession();
-            transaction = session.beginTransaction();
+            return transactionRunner.execute(() -> {
+                        List<Match> matches = matchRepository.findMatches(offset, PAGE_SIZE, filterName);
+                        Long countOfMatches = matchRepository.countByPlayerName(filterName);
+                        int totalPages = calculateTotalPages(countOfMatches);
 
-            List<Match> matches = matchRepository.findMatches(offset, PAGE_SIZE, filterName);
-            Long countOfMatches = matchRepository.countByPlayerName(filterName);
-
-            transaction.commit();
-
-            int totalPages = (int) Math.ceil((double) countOfMatches / PAGE_SIZE);
-
-            return new MatchesPageDto(
-                    matches,
-                    totalPages
+                        return new MatchesPageDto(
+                                matches,
+                                totalPages
+                        );
+                    }
             );
-        } catch (Exception e) {
-            if (transaction != null && transaction.isActive()) {
-                transaction.rollback();
-            }
-
+        } catch (RuntimeException e) {
             String message = String.format("Couldn't get matches for page %d with filter '%s'", page, filterName);
             throw new MatchRepositoryException(message, e);
         }
+    }
+
+    private int calculateOffset(int page) {
+        return (page - 1) * PAGE_SIZE;
+    }
+
+    private int calculateTotalPages(Long countOfMatches) {
+        return (int) Math.ceil((double) countOfMatches / PAGE_SIZE);
     }
 }
