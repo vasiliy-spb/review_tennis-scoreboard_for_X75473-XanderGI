@@ -24,7 +24,7 @@ public class ContextListener implements ServletContextListener {
         MatchRepository matchRepository = new MatchRepository();
         TransactionRunner transactionRunner = new TransactionRunner();
 
-        OngoingMatchesService ongoingMatchesService = new OngoingMatchesService(ongoingMatchRepository, playerRepository);
+        OngoingMatchesService ongoingMatchesService = new OngoingMatchesService(ongoingMatchRepository, playerRepository, transactionRunner);
         FinishedMatchesPersistenceService finishedMatchesService = new FinishedMatchesPersistenceService(matchRepository, transactionRunner);
         MatchScoreCalculationService calculationMatchService = new MatchScoreCalculationService();
 
