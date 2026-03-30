@@ -1,11 +1,12 @@
 package io.github.XanderGI.service;
 
+import io.github.XanderGI.dto.MatchDto;
 import io.github.XanderGI.dto.MatchesPageDto;
-import io.github.XanderGI.entity.Match;
 import io.github.XanderGI.exception.MatchNotFinishedException;
 import io.github.XanderGI.exception.MatchPersistenceException;
 import io.github.XanderGI.exception.MatchRepositoryException;
 import io.github.XanderGI.infrastructure.transaction.TransactionRunner;
+import io.github.XanderGI.mapper.MatchMapper;
 import io.github.XanderGI.model.MatchScore;
 import io.github.XanderGI.repository.MatchRepository;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +40,9 @@ public class FinishedMatchesPersistenceService {
             int offset = calculateOffset(page);
 
             return transactionRunner.execute(() -> {
-                        List<Match> matches = matchRepository.findMatches(offset, PAGE_SIZE, filterName);
+                        List<MatchDto> matches = matchRepository.findMatches(offset, PAGE_SIZE, filterName).stream()
+                                .map(MatchMapper::toMatchDto)
+                                .toList();
                         Long countOfMatches = matchRepository.countByPlayerName(filterName);
                         int totalPages = calculateTotalPages(countOfMatches);
 

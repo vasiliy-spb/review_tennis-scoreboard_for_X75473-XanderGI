@@ -52,10 +52,10 @@
                     </tr>
                     <c:forEach var="match" items="${dto.matches}">
                         <tr>
-                            <td>${match.playerOne.name}</td>
-                            <td>${match.playerTwo.name}</td>
+                            <td>${match.playerOneName}</td>
+                            <td>${match.playerTwoName}</td>
                             <td>
-                                <span class="winner-name-td">${match.winner.name}</span>
+                                <span class="winner-name-td">${match.winnerName}</span>
                             </td>
                         </tr>
                     </c:forEach>
