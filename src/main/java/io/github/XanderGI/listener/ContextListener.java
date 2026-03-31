@@ -6,6 +6,7 @@ import io.github.XanderGI.repository.OngoingMatchRepository;
 import io.github.XanderGI.repository.PlayerRepository;
 import io.github.XanderGI.repository.impl.InMemoryOngoingMatchRepository;
 import io.github.XanderGI.service.FinishedMatchesPersistenceService;
+import io.github.XanderGI.service.MatchFacadeService;
 import io.github.XanderGI.service.MatchScoreCalculationService;
 import io.github.XanderGI.service.OngoingMatchesService;
 import io.github.XanderGI.util.HibernateUtil;
@@ -27,10 +28,11 @@ public class ContextListener implements ServletContextListener {
         OngoingMatchesService ongoingMatchesService = new OngoingMatchesService(ongoingMatchRepository, playerRepository, transactionRunner);
         FinishedMatchesPersistenceService finishedMatchesService = new FinishedMatchesPersistenceService(matchRepository, transactionRunner);
         MatchScoreCalculationService calculationMatchService = new MatchScoreCalculationService();
+        MatchFacadeService matchFacadeService = new MatchFacadeService(ongoingMatchesService, calculationMatchService, finishedMatchesService);
 
         sce.getServletContext().setAttribute("ongoingMatchesService", ongoingMatchesService);
         sce.getServletContext().setAttribute("finishedMatchesService", finishedMatchesService);
-        sce.getServletContext().setAttribute("calculationMatchService", calculationMatchService);
+        sce.getServletContext().setAttribute("matchFacadeService", matchFacadeService);
     }
 
     @Override

@@ -2,8 +2,7 @@ package io.github.XanderGI.servlet;
 
 import io.github.XanderGI.exception.MatchNotFoundException;
 import io.github.XanderGI.model.MatchScore;
-import io.github.XanderGI.service.FinishedMatchesPersistenceService;
-import io.github.XanderGI.service.MatchScoreCalculationService;
+import io.github.XanderGI.service.MatchFacadeService;
 import io.github.XanderGI.service.OngoingMatchesService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -16,15 +15,13 @@ import java.util.UUID;
 
 @WebServlet("/match-score")
 public class MatchScoreServlet extends HttpServlet {
-    private MatchScoreCalculationService calculationMatchService;
     private OngoingMatchesService ongoingMatchesService;
-    private FinishedMatchesPersistenceService finishedMatchesService;
+    private MatchFacadeService matchFacadeService;
 
     @Override
     public void init() {
-        calculationMatchService = (MatchScoreCalculationService) getServletContext().getAttribute("calculationMatchService");
         ongoingMatchesService = (OngoingMatchesService) getServletContext().getAttribute("ongoingMatchesService");
-        finishedMatchesService = (FinishedMatchesPersistenceService) getServletContext().getAttribute("finishedMatchesService");
+        matchFacadeService = (MatchFacadeService) getServletContext().getAttribute("matchFacadeService");
     }
 
     @Override
@@ -38,10 +35,10 @@ public class MatchScoreServlet extends HttpServlet {
             if (matchScore == null) {
                 matchScore = (MatchScore) req.getSession().getAttribute("finishedMatch_" + matchId);
             }
-
             if (matchScore == null) {
                 throw new MatchNotFoundException("Match not found");
             }
+
 
             req.setAttribute("uuid", matchId);
             req.setAttribute("match", matchScore);
@@ -66,14 +63,9 @@ public class MatchScoreServlet extends HttpServlet {
             UUID matchId = UUID.fromString(stringMatchId);
             Integer playerId = Integer.valueOf(stringPlayedId);
 
-            MatchScore matchScore = ongoingMatchesService.get(matchId)
-                    .orElseThrow(() -> new MatchNotFoundException("Match not found"));
-
-            calculationMatchService.addPoint(matchScore, playerId);
+            MatchScore matchScore = matchFacadeService.playRally(matchId, playerId);
 
             if (matchScore.isMatchOver()) {
-                finishedMatchesService.save(matchScore);
-                ongoingMatchesService.remove(matchId);
                 req.getSession().setAttribute("finishedMatch_" + matchId, matchScore);
             }
 
