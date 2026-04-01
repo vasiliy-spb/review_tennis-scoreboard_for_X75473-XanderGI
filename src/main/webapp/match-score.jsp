@@ -35,7 +35,7 @@
     <c:choose>
         <c:when test="${match.matchOver}">
             <div class="container">
-                <h1>Match finished! ${match.winner.get().name} wins!</h1>
+                <h1>Match finished! ${match.winnerName} wins!</h1>
                 <section class="score">
                     <table class="table">
                         <thead class="result">
@@ -47,11 +47,11 @@
                         <tbody>
                         <tr class="player1">
                             <td class="table-text">${match.playerOne.name}</td>
-                            <td class="table-text">${match.playerScoreOne.set}</td>
+                            <td class="table-text">${match.playerOne.sets}</td>
                         </tr>
                         <tr class="player2">
                             <td class="table-text">${match.playerTwo.name}</td>
-                            <td class="table-text">${match.playerScoreTwo.set}</td>
+                            <td class="table-text">${match.playerTwo.sets}</td>
                         </tr>
                         </tbody>
                     </table>
@@ -76,18 +76,9 @@
                         <tbody>
                         <tr class="player1">
                             <td class="table-text">${match.playerOne.name}</td>
-                            <td class="table-text">${match.playerScoreOne.set}</td>
-                            <td class="table-text">${match.playerScoreOne.game}</td>
-                            <td class="table-text">
-                                <c:choose>
-                                    <c:when test="${match.tieBreak}">
-                                        ${match.playerScoreOne.tieBreakPoint}
-                                    </c:when>
-                                    <c:otherwise>
-                                        ${match.playerScoreOne.point.value}
-                                    </c:otherwise>
-                                </c:choose>
-                            </td>
+                            <td class="table-text">${match.playerOne.sets}</td>
+                            <td class="table-text">${match.playerOne.games}</td>
+                            <td class="table-text">${match.playerOne.displayPoints}</td>
                             <td class="table-text">
                                 <form method="post" action="/match-score">
                                     <input type="hidden" name="uuid" value="${uuid}">
@@ -98,18 +89,9 @@
                         </tr>
                         <tr class="player2">
                             <td class="table-text">${match.playerTwo.name}</td>
-                            <td class="table-text">${match.playerScoreTwo.set}</td>
-                            <td class="table-text">${match.playerScoreTwo.game}</td>
-                            <td class="table-text">
-                                <c:choose>
-                                    <c:when test="${match.tieBreak}">
-                                        ${match.playerScoreTwo.tieBreakPoint}
-                                    </c:when>
-                                    <c:otherwise>
-                                        ${match.playerScoreTwo.point.value}
-                                    </c:otherwise>
-                                </c:choose>
-                            </td>
+                            <td class="table-text">${match.playerTwo.sets}</td>
+                            <td class="table-text">${match.playerTwo.games}</td>
+                            <td class="table-text">${match.playerTwo.displayPoints}</td>
                             <td class="table-text">
                                 <form method="post" action="/match-score">
                                     <input type="hidden" name="uuid" value="${uuid}">
@@ -127,7 +109,8 @@
 </main>
 <footer>
     <div class="footer">
-        <p>&copy; Tennis Scoreboard, project from <a href="https://zhukovsd.github.io/java-backend-learning-course/">zhukovsd/java-backend-learning-course</a> roadmap.</p>
+        <p>&copy; Tennis Scoreboard, project from <a href="https://zhukovsd.github.io/java-backend-learning-course/">zhukovsd/java-backend-learning-course</a>
+            roadmap.</p>
     </div>
 </footer>
 </body>

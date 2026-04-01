@@ -1,6 +1,8 @@
 package io.github.XanderGI.servlet;
 
+import io.github.XanderGI.dto.MatchScoreDto;
 import io.github.XanderGI.exception.MatchNotFoundException;
+import io.github.XanderGI.mapper.MatchMapper;
 import io.github.XanderGI.model.MatchScore;
 import io.github.XanderGI.service.MatchFacadeService;
 import io.github.XanderGI.service.OngoingMatchesService;
@@ -32,16 +34,21 @@ public class MatchScoreServlet extends HttpServlet {
             MatchScore matchScore = ongoingMatchesService.get(matchId)
                     .orElse(null);
 
-            if (matchScore == null) {
-                matchScore = (MatchScore) req.getSession().getAttribute("finishedMatch_" + matchId);
+            MatchScoreDto dto;
+            if (matchScore != null) {
+                dto = MatchMapper.toMatchScoreDto(matchScore);
+            } else {
+                dto = (MatchScoreDto) req.getSession().getAttribute("finishedMatch_" + matchId);
+
             }
-            if (matchScore == null) {
+
+            if (dto == null) {
                 throw new MatchNotFoundException("Match not found");
             }
 
 
             req.setAttribute("uuid", matchId);
-            req.setAttribute("match", matchScore);
+            req.setAttribute("match", dto);
             req.getRequestDispatcher("/match-score.jsp").forward(req, resp);
         } catch (IllegalArgumentException e) {
             req.setAttribute("error", "Incorrect matchId from path");
@@ -66,7 +73,8 @@ public class MatchScoreServlet extends HttpServlet {
             MatchScore matchScore = matchFacadeService.playRally(matchId, playerId);
 
             if (matchScore.isMatchOver()) {
-                req.getSession().setAttribute("finishedMatch_" + matchId, matchScore);
+                MatchScoreDto dto = MatchMapper.toMatchScoreDto(matchScore);
+                req.getSession().setAttribute("finishedMatch_" + matchId, dto);
             }
 
             resp.sendRedirect("/match-score?uuid=" + matchId);
