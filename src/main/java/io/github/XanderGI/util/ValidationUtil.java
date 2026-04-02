@@ -1,5 +1,6 @@
 package io.github.XanderGI.util;
 
+import io.github.XanderGI.exception.InvalidMatchException;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -14,5 +15,11 @@ public class ValidationUtil {
         int pageNumber = Integer.parseInt(page);
 
         return Math.max(pageNumber, 1);
+    }
+
+    public static void checkNamesIsValid(String firstName, String secondName) {
+        if (firstName == null || secondName == null || firstName.isBlank() || secondName.isBlank()) {
+            throw new InvalidMatchException("The names of the players cannot be empty");
+        }
     }
 }

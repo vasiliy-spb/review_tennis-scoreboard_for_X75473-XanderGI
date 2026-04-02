@@ -2,6 +2,7 @@ package io.github.XanderGI.servlet;
 
 import io.github.XanderGI.exception.InvalidMatchException;
 import io.github.XanderGI.service.OngoingMatchesService;
+import io.github.XanderGI.util.ValidationUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -14,6 +15,8 @@ import java.util.UUID;
 
 @WebServlet("/new-match")
 public class NewMatchServlet extends HttpServlet {
+    private static final String REDIRECT_URL_TEMPLATE = "/match-score?uuid=%s";
+    private static final String JSP_PATH = "/new-match.jsp";
     private OngoingMatchesService ongoingMatchesService;
 
     @Override
@@ -23,29 +26,26 @@ public class NewMatchServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("/new-match.jsp").forward(req, resp);
+        req.getRequestDispatcher(JSP_PATH).forward(req, resp);
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String nameOne = req.getParameter("nameOne");
-        String nameTwo = req.getParameter("nameTwo");
-
-        if (nameOne == null || nameOne.isBlank() || nameTwo == null || nameTwo.isBlank()) {
-            req.setAttribute("error", "The names of the players cannot be empty");
-            req.getRequestDispatcher("/new-match.jsp").forward(req, resp);
-            return;
-        }
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+        String firstName = req.getParameter("nameOne");
+        String secondName = req.getParameter("nameTwo");
 
         try {
-            String firstName = nameOne.strip();
-            String secondName = nameTwo.strip();
+            ValidationUtil.checkNamesIsValid(firstName, secondName);
+            firstName = firstName.strip();
+            secondName = secondName.strip();
+
             UUID uuid = ongoingMatchesService.create(firstName, secondName);
-            String site = "/match-score?uuid=";
-            resp.sendRedirect(site + uuid);
+
+            String url = REDIRECT_URL_TEMPLATE.formatted(uuid);
+            resp.sendRedirect(url);
         } catch (InvalidMatchException e) {
             req.setAttribute("error", e.getMessage());
-            req.getRequestDispatcher("/new-match.jsp").forward(req, resp);
+            req.getRequestDispatcher(JSP_PATH).forward(req, resp);
         }
 
     }
