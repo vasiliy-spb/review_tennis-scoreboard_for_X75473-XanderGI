@@ -14,7 +14,7 @@ import java.util.UUID;
 @WebServlet("/new-match")
 public class NewMatchServlet extends BaseServlet {
     private static final String REDIRECT_URL_TEMPLATE = "/match-score?uuid=%s";
-    private static final String JSP_PATH = "/new-match.jsp";
+    private static final String JSP_NEW_MATCH = "/new-match.jsp";
     private OngoingMatchesService ongoingMatchesService;
 
     @Override
@@ -24,13 +24,13 @@ public class NewMatchServlet extends BaseServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher(JSP_PATH).forward(req, resp);
+        req.getRequestDispatcher(JSP_NEW_MATCH).forward(req, resp);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        String firstName = req.getParameter("nameOne");
-        String secondName = req.getParameter("nameTwo");
+        String firstName = req.getParameter("firstName");
+        String secondName = req.getParameter("secondName");
 
         ValidationUtil.checkNamesIsValid(firstName, secondName);
         firstName = firstName.strip();
@@ -44,6 +44,6 @@ public class NewMatchServlet extends BaseServlet {
 
     @Override
     protected String getErrorPath() {
-        return JSP_PATH;
+        return JSP_NEW_MATCH;
     }
 }

@@ -36,10 +36,10 @@
                 <form method="post" action="/new-match">
                     <p style="color: red;">${error}</p>
                     <label class="label-player" for="playerOne">Player one</label>
-                    <input class="input-player" name="nameOne" placeholder="Name" type="text" required
+                    <input class="input-player" name="firstName" placeholder="Name" type="text" required
                            title="Enter a name">
                     <label class="label-player" for="playerTwo">Player two</label>
-                    <input class="input-player" name="nameTwo" placeholder="Name" type="text" required
+                    <input class="input-player" name="secondName" placeholder="Name" type="text" required
                            title="Enter a name">
                     <input class="form-button" type="submit" value="Start">
                 </form>
