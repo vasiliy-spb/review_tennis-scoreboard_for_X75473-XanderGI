@@ -294,6 +294,12 @@ footer {
     font-style: normal;
 }
 
+.table-text {
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .table-text + .table-text {
     text-align: center;
 }
@@ -518,6 +524,8 @@ footer {
     border-bottom: 1px solid #dddddd;
     padding: 20px 15px;
     text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .table-matches tr td:first-child, .table-matches tr th:first-child {
