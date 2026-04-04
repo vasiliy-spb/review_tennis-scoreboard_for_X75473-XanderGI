@@ -20,11 +20,14 @@ public class MatchesServlet extends BaseServlet {
         finishedMatchesService = (FinishedMatchesPersistenceService) getServletContext().getAttribute("finishedMatchesService");
     }
 
-    // todo: в фильтре обработать пробелы вокруг filterName - например "Novak ", " Novak "
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String page = req.getParameter("page");
         String filterName = req.getParameter("filter_by_player_name");
+
+        if (filterName != null) {
+            filterName = filterName.strip();
+        }
 
         int pageNumber = ValidationUtil.parsePageNumber(page);
 
