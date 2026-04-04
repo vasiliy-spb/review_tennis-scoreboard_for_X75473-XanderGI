@@ -206,9 +206,8 @@ footer {
 }
 
 .btn-filter {
-    width: 280px;
+    padding: 0 30px;
     line-height: 45px;
-    margin-left: 20px;
     border-radius: 18px;
     border: none;
     background-color: #42a7f5;
@@ -217,6 +216,14 @@ footer {
     display: inline-block;
     text-decoration: none;
     text-align: center;
+    font-family: inherit;
+    white-space: nowrap;
+}
+
+.filter-buttons-group {
+    display: flex;
+    gap: 15px;
+    margin-left: 20px;
 }
 
 /* Current match */

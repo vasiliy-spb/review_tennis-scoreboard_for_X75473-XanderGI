@@ -35,7 +35,8 @@
         <form class="input-container" method="get" action="/matches">
             <input class="input-filter" placeholder="Filter by name" type="text" name="filter_by_player_name"
                    value="${filterName}"/>
-            <div>
+            <div class="filter-buttons-group">
+                <button type="submit" class="btn-filter">Find</button>
                 <a class="btn-filter" href="/matches">Reset Filter</a>
             </div>
         </form>
