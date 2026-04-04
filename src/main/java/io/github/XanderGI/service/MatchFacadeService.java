@@ -16,11 +16,17 @@ public class MatchFacadeService {
         MatchScore matchScore = ongoingMatchesService.get(matchId)
                 .orElseThrow(() -> new MatchNotFoundException("Match not found"));
 
-        calculationMatchService.addPoint(matchScore, playerId);
+        synchronized (matchScore) {
+            if (matchScore.isMatchOver()) {
+                return matchScore;
+            }
 
-        if (matchScore.isMatchOver()) {
-            finishedMatchesService.save(matchScore);
-            ongoingMatchesService.remove(matchId);
+            calculationMatchService.addPoint(matchScore, playerId);
+
+            if (matchScore.isMatchOver()) {
+                finishedMatchesService.save(matchScore);
+                ongoingMatchesService.remove(matchId);
+            }
         }
 
         return matchScore;
