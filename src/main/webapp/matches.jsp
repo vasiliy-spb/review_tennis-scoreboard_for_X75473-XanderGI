@@ -45,22 +45,24 @@
         </c:if>
         <c:choose>
             <c:when test="${not empty dto.matches}">
-                <table class="table-matches">
-                    <tr>
-                        <th>Player One</th>
-                        <th>Player Two</th>
-                        <th>Winner</th>
-                    </tr>
-                    <c:forEach var="match" items="${dto.matches}">
+                <div class="table-responsive">
+                    <table class="table-matches">
                         <tr>
-                            <td>${match.playerOneName}</td>
-                            <td>${match.playerTwoName}</td>
-                            <td>
-                                <span class="winner-name-td">${match.winnerName}</span>
-                            </td>
+                            <th>Player One</th>
+                            <th>Player Two</th>
+                            <th>Winner</th>
                         </tr>
-                    </c:forEach>
-                </table>
+                        <c:forEach var="match" items="${dto.matches}">
+                            <tr>
+                                <td>${match.playerOneName}</td>
+                                <td>${match.playerTwoName}</td>
+                                <td>
+                                    <span class="winner-name-td">${match.winnerName}</span>
+                                </td>
+                            </tr>
+                        </c:forEach>
+                    </table>
+                </div>
                 <div class="pagination">
                     <c:if test="${pageNumber > 1}">
                         <c:url value="/matches" var="prevPageUrl">

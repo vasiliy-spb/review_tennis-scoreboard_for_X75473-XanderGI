@@ -363,6 +363,16 @@ footer {
         box-sizing: border-box;
     }
 
+    .input-container {
+        flex-direction: column;
+    }
+
+    .filter-buttons-group {
+        margin-left: 0;
+        margin-top: 15px;
+        justify-content: center;
+    }
+
     .form-container {
         width: 80%;
     }
@@ -476,7 +486,7 @@ footer {
 
 .table-matches th {
     font-weight: bold;
-    padding: 5px;
+    padding: 20px 15px;
     background: #dddddd;
     border: 1px solid #dddddd;
 }
@@ -484,7 +494,7 @@ footer {
 .table-matches td {
     width: 33%;
     border-bottom: 1px solid #dddddd;
-    padding: 51px 0;
+    padding: 20px 15px;
     text-align: center;
 }
 
@@ -498,9 +508,8 @@ footer {
 
 .winner-name-td {
     background-color: #dddddd;
-    display: block;
-    width: 38%;
-    margin: 0 auto;
+    display: inline-block;
+    padding: 5px 20px;
     border-radius: 18px;
 }
 
@@ -529,4 +538,15 @@ footer {
 
 .num-page.current {
     font-weight: bold;
+}
+
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.table-matches th,
+.table-matches td {
+    white-space: nowrap;
 }
