@@ -9,6 +9,7 @@ import java.util.UUID;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ValidationUtil {
     private static final Integer MAX_NAME_LENGTH = 50;
+    private static final String NAME_PATTERN = "^[a-zA-Z\\s-']+$";
 
     public static int parsePageNumber(String page) {
         if (page == null || page.isBlank()) {
@@ -30,6 +31,10 @@ public class ValidationUtil {
 
         if (firstName.length() > MAX_NAME_LENGTH || secondName.length() > MAX_NAME_LENGTH) {
             throw new InvalidMatchException("The player's name cannot exceed 50 characters");
+        }
+
+        if (!firstName.matches(NAME_PATTERN) || !secondName.matches(NAME_PATTERN)) {
+            throw new InvalidMatchException("The name of the players must contain only the latin alphabet");
         }
     }
 
