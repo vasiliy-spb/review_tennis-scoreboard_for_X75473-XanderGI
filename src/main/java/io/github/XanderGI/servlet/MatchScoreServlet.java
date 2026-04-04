@@ -21,6 +21,7 @@ public class MatchScoreServlet extends BaseServlet {
     private static final String REDIRECT_URL_TEMPLATE = "/match-score?uuid=%s";
     private static final String JSP_NEW_MATCH = "/new-match.jsp";
     private static final String JSP_MATCH_SCORE = "/match-score.jsp";
+    private static final String FINISHED_MATCH_KEY_TEMPLATE = "finishedMatch_%s";
     private OngoingMatchesService ongoingMatchesService;
     private MatchFacadeService matchFacadeService;
 
@@ -55,7 +56,8 @@ public class MatchScoreServlet extends BaseServlet {
 
         if (matchScore.isMatchOver()) {
             MatchScoreDto dto = MatchMapper.toMatchScoreDto(matchScore);
-            req.getSession().setAttribute("finishedMatch_" + matchId, dto);
+            String sessionKey = FINISHED_MATCH_KEY_TEMPLATE.formatted(matchId);
+            req.getSession().setAttribute(sessionKey, dto);
         }
 
         String url = REDIRECT_URL_TEMPLATE.formatted(matchId);
@@ -70,8 +72,8 @@ public class MatchScoreServlet extends BaseServlet {
         if (matchScore != null) {
             dto = MatchMapper.toMatchScoreDto(matchScore);
         } else {
-            dto = (MatchScoreDto) req.getSession().getAttribute("finishedMatch_" + matchId);
-
+            String sessionKey = FINISHED_MATCH_KEY_TEMPLATE.formatted(matchId);
+            dto = (MatchScoreDto) req.getSession().getAttribute(sessionKey);
         }
 
         if (dto == null) {
