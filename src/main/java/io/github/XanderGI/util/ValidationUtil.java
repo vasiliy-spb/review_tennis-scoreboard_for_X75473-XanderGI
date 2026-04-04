@@ -9,14 +9,17 @@ import java.util.UUID;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ValidationUtil {
 
-    public static int parsePageNumber(String page) throws NumberFormatException {
+    public static int parsePageNumber(String page) {
         if (page == null || page.isBlank()) {
             return 1;
         }
 
-        int pageNumber = Integer.parseInt(page);
-
-        return Math.max(pageNumber, 1);
+        try {
+            int pageNumber = Integer.parseInt(page);
+            return Math.max(pageNumber, 1);
+        } catch (NumberFormatException e) {
+            throw new InvalidMatchException("Invalid page number format");
+        }
     }
 
     public static void checkNamesIsValid(String firstName, String secondName) {
@@ -35,7 +38,7 @@ public class ValidationUtil {
 
     public static Integer parsePlayerId(String playerId) {
         try {
-             return Integer.valueOf(playerId);
+            return Integer.valueOf(playerId);
         } catch (NumberFormatException e) {
             throw new InvalidMatchException("Invalid playerId format");
         }
