@@ -1,6 +1,7 @@
 package io.github.XanderGI.servlet;
 
 import io.github.XanderGI.dto.MatchesPageDto;
+import io.github.XanderGI.listener.ContextListener;
 import io.github.XanderGI.service.FinishedMatchesPersistenceService;
 import io.github.XanderGI.util.ValidationUtil;
 import jakarta.servlet.ServletException;
@@ -17,7 +18,7 @@ public class MatchesServlet extends BaseServlet {
 
     @Override
     public void init() {
-        finishedMatchesService = (FinishedMatchesPersistenceService) getServletContext().getAttribute("finishedMatchesService");
+        finishedMatchesService = (FinishedMatchesPersistenceService) getServletContext().getAttribute(ContextListener.FINISHED_MATCHES_SERVICE);
     }
 
     @Override

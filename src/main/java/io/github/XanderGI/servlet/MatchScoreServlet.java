@@ -2,6 +2,7 @@ package io.github.XanderGI.servlet;
 
 import io.github.XanderGI.dto.MatchScoreDto;
 import io.github.XanderGI.exception.MatchNotFoundException;
+import io.github.XanderGI.listener.ContextListener;
 import io.github.XanderGI.mapper.MatchMapper;
 import io.github.XanderGI.model.MatchScore;
 import io.github.XanderGI.service.MatchFacadeService;
@@ -25,8 +26,8 @@ public class MatchScoreServlet extends BaseServlet {
 
     @Override
     public void init() {
-        ongoingMatchesService = (OngoingMatchesService) getServletContext().getAttribute("ongoingMatchesService");
-        matchFacadeService = (MatchFacadeService) getServletContext().getAttribute("matchFacadeService");
+        ongoingMatchesService = (OngoingMatchesService) getServletContext().getAttribute(ContextListener.ONGOING_MATCHES_SERVICE);
+        matchFacadeService = (MatchFacadeService) getServletContext().getAttribute(ContextListener.MATCH_FACADE_SERVICE);
     }
 
     @Override

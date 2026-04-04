@@ -1,5 +1,6 @@
 package io.github.XanderGI.servlet;
 
+import io.github.XanderGI.listener.ContextListener;
 import io.github.XanderGI.service.OngoingMatchesService;
 import io.github.XanderGI.util.ValidationUtil;
 import jakarta.servlet.ServletException;
@@ -19,7 +20,7 @@ public class NewMatchServlet extends BaseServlet {
 
     @Override
     public void init() {
-        ongoingMatchesService = (OngoingMatchesService) getServletContext().getAttribute("ongoingMatchesService");
+        ongoingMatchesService = (OngoingMatchesService) getServletContext().getAttribute(ContextListener.ONGOING_MATCHES_SERVICE);
     }
 
     @Override

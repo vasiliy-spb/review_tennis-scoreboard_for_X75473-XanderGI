@@ -16,6 +16,10 @@ import jakarta.servlet.annotation.WebListener;
 
 @WebListener
 public class ContextListener implements ServletContextListener {
+    public static final String ONGOING_MATCHES_SERVICE = "ongoingMatchesService";
+    public static final String FINISHED_MATCHES_SERVICE = "finishedMatchesService";
+    public static final String MATCH_FACADE_SERVICE = "matchFacadeService";
+
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         HibernateUtil.init();
@@ -30,9 +34,9 @@ public class ContextListener implements ServletContextListener {
         MatchScoreCalculationService calculationMatchService = new MatchScoreCalculationService();
         MatchFacadeService matchFacadeService = new MatchFacadeService(ongoingMatchesService, calculationMatchService, finishedMatchesService);
 
-        sce.getServletContext().setAttribute("ongoingMatchesService", ongoingMatchesService);
-        sce.getServletContext().setAttribute("finishedMatchesService", finishedMatchesService);
-        sce.getServletContext().setAttribute("matchFacadeService", matchFacadeService);
+        sce.getServletContext().setAttribute(ONGOING_MATCHES_SERVICE, ongoingMatchesService);
+        sce.getServletContext().setAttribute(FINISHED_MATCHES_SERVICE, finishedMatchesService);
+        sce.getServletContext().setAttribute(MATCH_FACADE_SERVICE, matchFacadeService);
     }
 
     @Override
