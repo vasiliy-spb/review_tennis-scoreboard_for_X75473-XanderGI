@@ -37,24 +37,26 @@
             <div class="container">
                 <h1>Match finished! ${match.winnerName} wins!</h1>
                 <section class="score">
-                    <table class="table">
-                        <thead class="result">
-                        <tr>
-                            <th class="table-text">PLAYER</th>
-                            <th class="table-text">SETS</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr class="player1">
-                            <td class="table-text">${match.playerOne.name}</td>
-                            <td class="table-text">${match.playerOne.sets}</td>
-                        </tr>
-                        <tr class="player2">
-                            <td class="table-text">${match.playerTwo.name}</td>
-                            <td class="table-text">${match.playerTwo.sets}</td>
-                        </tr>
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead class="result">
+                            <tr>
+                                <th class="table-text">PLAYER</th>
+                                <th class="table-text">SETS</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr class="player1">
+                                <td class="table-text">${match.playerOne.name}</td>
+                                <td class="table-text">${match.playerOne.sets}</td>
+                            </tr>
+                            <tr class="player2">
+                                <td class="table-text">${match.playerTwo.name}</td>
+                                <td class="table-text">${match.playerTwo.sets}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </section>
                 <a href="/" class="home-btn">HOME</a>
             </div>
@@ -64,44 +66,46 @@
                 <h1>Current match</h1>
                 <div class="current-match-image"></div>
                 <section class="score">
-                    <table class="table">
-                        <thead class="result">
-                        <tr>
-                            <th class="table-text">Player</th>
-                            <th class="table-text">Sets</th>
-                            <th class="table-text">Games</th>
-                            <th class="table-text">Points</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr class="player1">
-                            <td class="table-text">${match.playerOne.name}</td>
-                            <td class="table-text">${match.playerOne.sets}</td>
-                            <td class="table-text">${match.playerOne.games}</td>
-                            <td class="table-text">${match.playerOne.displayPoints}</td>
-                            <td class="table-text">
-                                <form method="post" action="/match-score">
-                                    <input type="hidden" name="uuid" value="${uuid}">
-                                    <input type="hidden" name="playerId" value="${match.playerOne.id}">
-                                    <input class="score-btn" type="submit" value="Score">
-                                </form>
-                            </td>
-                        </tr>
-                        <tr class="player2">
-                            <td class="table-text">${match.playerTwo.name}</td>
-                            <td class="table-text">${match.playerTwo.sets}</td>
-                            <td class="table-text">${match.playerTwo.games}</td>
-                            <td class="table-text">${match.playerTwo.displayPoints}</td>
-                            <td class="table-text">
-                                <form method="post" action="/match-score">
-                                    <input type="hidden" name="uuid" value="${uuid}">
-                                    <input type="hidden" name="playerId" value="${match.playerTwo.id}">
-                                    <input class="score-btn" type="submit" value="Score">
-                                </form>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead class="result">
+                            <tr>
+                                <th class="table-text">Player</th>
+                                <th class="table-text">Sets</th>
+                                <th class="table-text">Games</th>
+                                <th class="table-text">Points</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr class="player1">
+                                <td class="table-text">${match.playerOne.name}</td>
+                                <td class="table-text">${match.playerOne.sets}</td>
+                                <td class="table-text">${match.playerOne.games}</td>
+                                <td class="table-text">${match.playerOne.displayPoints}</td>
+                                <td class="table-text">
+                                    <form method="post" action="/match-score">
+                                        <input type="hidden" name="uuid" value="${uuid}">
+                                        <input type="hidden" name="playerId" value="${match.playerOne.id}">
+                                        <input class="score-btn" type="submit" value="Score">
+                                    </form>
+                                </td>
+                            </tr>
+                            <tr class="player2">
+                                <td class="table-text">${match.playerTwo.name}</td>
+                                <td class="table-text">${match.playerTwo.sets}</td>
+                                <td class="table-text">${match.playerTwo.games}</td>
+                                <td class="table-text">${match.playerTwo.displayPoints}</td>
+                                <td class="table-text">
+                                    <form method="post" action="/match-score">
+                                        <input type="hidden" name="uuid" value="${uuid}">
+                                        <input type="hidden" name="playerId" value="${match.playerTwo.id}">
+                                        <input class="score-btn" type="submit" value="Score">
+                                    </form>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </section>
             </div>
         </c:otherwise>
