@@ -1,6 +1,7 @@
 package io.github.XanderGI.servlet;
 
 import io.github.XanderGI.exception.InvalidMatchException;
+import io.github.XanderGI.exception.MatchNotFoundException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,8 +18,10 @@ public abstract class BaseServlet extends HttpServlet {
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             super.service(req, resp);
-        } catch (InvalidMatchException e) {
+        } catch (InvalidMatchException | IllegalArgumentException e) {
             handleError(req, resp, getErrorPath(), e.getMessage(), HttpServletResponse.SC_BAD_REQUEST);
+        } catch (MatchNotFoundException e) {
+            handleError(req, resp, getErrorPath(), e.getMessage(), HttpServletResponse.SC_NOT_FOUND);
         }
 
     }
