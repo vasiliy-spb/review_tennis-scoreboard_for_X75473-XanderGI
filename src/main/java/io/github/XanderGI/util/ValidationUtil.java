@@ -8,6 +8,7 @@ import java.util.UUID;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ValidationUtil {
+    private static final Integer MAX_NAME_LENGTH = 50;
 
     public static int parsePageNumber(String page) {
         if (page == null || page.isBlank()) {
@@ -25,6 +26,10 @@ public class ValidationUtil {
     public static void checkNamesIsValid(String firstName, String secondName) {
         if (firstName == null || secondName == null || firstName.isBlank() || secondName.isBlank()) {
             throw new InvalidMatchException("The names of the players cannot be empty");
+        }
+
+        if (firstName.length() > MAX_NAME_LENGTH || secondName.length() > MAX_NAME_LENGTH) {
+            throw new InvalidMatchException("The player's name cannot exceed 50 characters");
         }
     }
 
