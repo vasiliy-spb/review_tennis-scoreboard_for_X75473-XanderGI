@@ -4,15 +4,16 @@ import io.github.XanderGI.entity.Match;
 import io.github.XanderGI.entity.Player;
 import io.github.XanderGI.model.MatchScore;
 import io.github.XanderGI.util.HibernateUtil;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import org.hibernate.Session;
-import org.hibernate.query.Query;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MatchRepository {
-    private static final String FIND_ALL_MATCHES = "FROM Match";
-    private static final String COUNT_ALL_MATCHES = "SELECT COUNT(*) FROM Match";
-    private static final String FILTER_BY_NAME_CLAUSE = "WHERE playerOne.name = :playerName OR playerTwo.name = :playerName";
 
     public void save(MatchScore matchScore) {
         Session session = HibernateUtil.getSession();
@@ -30,43 +31,56 @@ public class MatchRepository {
         session.persist(match);
     }
 
-    public List<Match> findMatches(int offset, int limit, String filterName) {
-        String hql = buildHql(FIND_ALL_MATCHES, filterName);
-
+    public List<Match> findMatches(int offset, int limit, List<String> tokens) {
         Session session = HibernateUtil.getSession();
 
-        Query<Match> query = session.createQuery(hql, Match.class);
-        applyFilterParameter(query, filterName);
+        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaQuery<Match> criteria = criteriaBuilder.createQuery(Match.class);
+        Root<Match> matchRoot = criteria.from(Match.class);
 
-        return query.setFirstResult(offset).setMaxResults(limit).list();
+        criteria.select(matchRoot);
+
+        Predicate[] predicates = buildSearchPredicates(criteriaBuilder, matchRoot, tokens);
+
+        if (predicates.length > 0) {
+            criteria.where(criteriaBuilder.and(predicates));
+        }
+
+        return session.createQuery(criteria)
+                .setFirstResult(offset)
+                .setMaxResults(limit)
+                .list();
     }
 
-    public Long countByPlayerName(String filterName) {
-        String hql = buildHql(COUNT_ALL_MATCHES, filterName);
-
+    public Long countMatchesByTokens(List<String> tokens) {
         Session session = HibernateUtil.getSession();
 
-        Query<Long> query = session.createQuery(hql, Long.class);
-        applyFilterParameter(query, filterName);
+        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaQuery<Long> criteria = criteriaBuilder.createQuery(Long.class);
+        Root<Match> matchRoot = criteria.from(Match.class);
 
-        return query.getSingleResult();
-    }
+        criteria.select(criteriaBuilder.count(matchRoot));
 
-    private String buildHql(String baseQuery, String filterName) {
-        if (hasFilter(filterName)) {
-            return baseQuery + " " + FILTER_BY_NAME_CLAUSE;
+        Predicate[] predicates = buildSearchPredicates(criteriaBuilder, matchRoot, tokens);
+
+        if (predicates.length > 0) {
+            criteria.where(criteriaBuilder.and(predicates));
         }
 
-        return baseQuery;
+        return session.createQuery(criteria).getSingleResult();
     }
 
-    private void applyFilterParameter(Query<?> query, String filterName) {
-        if (hasFilter(filterName)) {
-            query.setParameter("playerName", filterName);
+    private Predicate[] buildSearchPredicates(CriteriaBuilder criteriaBuilder, Root<Match> matchRoot, List<String> tokens) {
+        List<Predicate> conditions = new ArrayList<>();
+
+        for (String token : tokens) {
+            String pattern = "%" + token + "%";
+            Predicate firstPlayerName = criteriaBuilder.like(criteriaBuilder.lower(matchRoot.get("playerOne").get("name")), pattern);
+            Predicate secondPlayerName = criteriaBuilder.like(criteriaBuilder.lower(matchRoot.get("playerTwo").get("name")), pattern);
+
+            conditions.add(criteriaBuilder.or(firstPlayerName, secondPlayerName));
         }
-    }
 
-    private boolean hasFilter(String filterName) {
-        return filterName != null && !filterName.isBlank();
+        return conditions.toArray(new Predicate[0]);
     }
 }

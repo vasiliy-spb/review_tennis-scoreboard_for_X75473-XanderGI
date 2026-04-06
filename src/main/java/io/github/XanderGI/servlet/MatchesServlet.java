@@ -26,10 +26,6 @@ public class MatchesServlet extends BaseServlet {
         String page = req.getParameter("page");
         String filterName = req.getParameter("filter_by_player_name");
 
-        if (filterName != null) {
-            filterName = filterName.strip();
-        }
-
         int pageNumber = ValidationUtil.parsePageNumber(page);
 
         MatchesPageDto dto = finishedMatchesService.getMatchesPage(pageNumber, filterName);

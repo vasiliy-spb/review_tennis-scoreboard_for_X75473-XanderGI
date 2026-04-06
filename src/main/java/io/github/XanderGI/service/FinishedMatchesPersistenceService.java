@@ -9,6 +9,7 @@ import io.github.XanderGI.infrastructure.transaction.TransactionRunner;
 import io.github.XanderGI.mapper.MatchMapper;
 import io.github.XanderGI.model.MatchScore;
 import io.github.XanderGI.repository.MatchRepository;
+import io.github.XanderGI.util.SearchUtil;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -40,10 +41,12 @@ public class FinishedMatchesPersistenceService {
             int offset = calculateOffset(page);
 
             return transactionRunner.execute(() -> {
-                        List<MatchDto> matches = matchRepository.findMatches(offset, PAGE_SIZE, filterName).stream()
+                        List<String> tokens = SearchUtil.tokenize(filterName);
+
+                        List<MatchDto> matches = matchRepository.findMatches(offset, PAGE_SIZE, tokens).stream()
                                 .map(MatchMapper::toMatchDto)
                                 .toList();
-                        Long countOfMatches = matchRepository.countByPlayerName(filterName);
+                        Long countOfMatches = matchRepository.countMatchesByTokens(tokens);
                         int totalPages = calculateTotalPages(countOfMatches);
 
                         return new MatchesPageDto(
