@@ -83,7 +83,7 @@
                                 <td class="table-text">${match.playerOne.games}</td>
                                 <td class="table-text">${match.playerOne.displayPoints}</td>
                                 <td class="table-text">
-                                    <form method="post" action="/match-score">
+                                    <form method="post" action="/match-score?uuid=${uuid}">
                                         <input type="hidden" name="uuid" value="${uuid}">
                                         <input type="hidden" name="playerId" value="${match.playerOne.id}">
                                         <input class="score-btn" type="submit" value="Score">

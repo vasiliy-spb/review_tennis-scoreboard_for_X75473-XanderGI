@@ -21,7 +21,6 @@ public class MatchScoreServlet extends BaseServlet {
     private static final String REDIRECT_URL_TEMPLATE = "/match-score?uuid=%s";
     private static final String JSP_NEW_MATCH = "/new-match.jsp";
     private static final String JSP_MATCH_SCORE = "/match-score.jsp";
-    private static final String FINISHED_MATCH_KEY_TEMPLATE = "finishedMatch_%s";
     private OngoingMatchesService ongoingMatchesService;
     private MatchFacadeService matchFacadeService;
 
@@ -37,15 +36,15 @@ public class MatchScoreServlet extends BaseServlet {
 
         UUID matchId = ValidationUtil.parseUUID(stringMatchId);
 
-        MatchScoreDto dto = getMatchOrThrow(matchId, req);
+        MatchScoreDto dto = ongoingMatchesService.get(matchId)
+                .map(MatchMapper::toMatchScoreDto)
+                .orElseThrow(() -> new MatchNotFoundException("Match not found"));
 
-        req.setAttribute("uuid", matchId);
-        req.setAttribute("match", dto);
-        req.getRequestDispatcher(JSP_MATCH_SCORE).forward(req, resp);
+        renderMatchScore(req, resp, matchId, dto);
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String stringMatchId = req.getParameter("uuid");
         String stringPlayedId = req.getParameter("playerId");
 
@@ -56,34 +55,22 @@ public class MatchScoreServlet extends BaseServlet {
 
         if (matchScore.isMatchOver()) {
             MatchScoreDto dto = MatchMapper.toMatchScoreDto(matchScore);
-            String sessionKey = FINISHED_MATCH_KEY_TEMPLATE.formatted(matchId);
-            req.getSession().setAttribute(sessionKey, dto);
+            renderMatchScore(req, resp, matchId, dto);
+            return;
         }
 
         String url = REDIRECT_URL_TEMPLATE.formatted(matchId);
         resp.sendRedirect(url);
     }
 
-    private MatchScoreDto getMatchOrThrow(UUID matchId, HttpServletRequest req) {
-        MatchScore matchScore = ongoingMatchesService.get(matchId)
-                .orElse(null);
-
-        MatchScoreDto dto;
-        if (matchScore != null) {
-            dto = MatchMapper.toMatchScoreDto(matchScore);
-        } else {
-            String sessionKey = FINISHED_MATCH_KEY_TEMPLATE.formatted(matchId);
-            dto = (MatchScoreDto) req.getSession().getAttribute(sessionKey);
-        }
-
-        if (dto == null) {
-            throw new MatchNotFoundException("Match not found");
-        }
-        return dto;
-    }
-
     @Override
     protected String getErrorPath() {
         return JSP_NEW_MATCH;
+    }
+
+    private void renderMatchScore(HttpServletRequest req, HttpServletResponse resp, UUID matchId, MatchScoreDto dto) throws ServletException, IOException {
+        req.setAttribute("uuid", matchId);
+        req.setAttribute("match", dto);
+        req.getRequestDispatcher(JSP_MATCH_SCORE).forward(req, resp);
     }
 }
