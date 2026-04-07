@@ -9,7 +9,7 @@ import java.util.UUID;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ValidationUtil {
     private static final Integer MAX_NAME_LENGTH = 50;
-    private static final String NAME_PATTERN = "^[a-zA-Z\\s-']+$";
+    private static final String NAME_PATTERN = "^[a-zA-Z0-9\\s-']+$";
 
     public static int parsePageNumber(String page) {
         if (page == null || page.isBlank()) {

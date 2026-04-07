@@ -37,10 +37,10 @@
                     <p style="color: red;">${error}</p>
                     <label class="label-player" for="playerOne">Player one</label>
                     <input class="input-player" name="firstName" placeholder="Name" type="text" required
-                           title="Enter a name">
+                           title="Enter a name" value="${param.firstName}">
                     <label class="label-player" for="playerTwo">Player two</label>
                     <input class="input-player" name="secondName" placeholder="Name" type="text" required
-                           title="Enter a name">
+                           title="Enter a name" value="${param.secondName}">
                     <input class="form-button" type="submit" value="Start">
                 </form>
             </div>
