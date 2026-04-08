@@ -19,8 +19,8 @@ import java.util.UUID;
 @WebServlet("/match-score")
 public class MatchScoreServlet extends BaseServlet {
     private static final String REDIRECT_URL_TEMPLATE = "/match-score?uuid=%s";
-    private static final String JSP_NEW_MATCH = "/new-match.jsp";
-    private static final String JSP_MATCH_SCORE = "/match-score.jsp";
+    private static final String VIEW_NEW_MATCH = "new-match";
+    private static final String VIEW_MATCH_SCORE = "match-score";
     private OngoingMatchesService ongoingMatchesService;
     private MatchFacadeService matchFacadeService;
 
@@ -65,12 +65,12 @@ public class MatchScoreServlet extends BaseServlet {
 
     @Override
     protected String getErrorPath() {
-        return JSP_NEW_MATCH;
+        return VIEW_NEW_MATCH;
     }
 
     private void renderMatchScore(HttpServletRequest req, HttpServletResponse resp, UUID matchId, MatchScoreDto dto) throws ServletException, IOException {
         req.setAttribute("uuid", matchId);
         req.setAttribute("match", dto);
-        req.getRequestDispatcher(JSP_MATCH_SCORE).forward(req, resp);
+        renderView(req, resp, VIEW_MATCH_SCORE);
     }
 }

@@ -15,7 +15,7 @@ import java.util.UUID;
 @WebServlet("/new-match")
 public class NewMatchServlet extends BaseServlet {
     private static final String REDIRECT_URL_TEMPLATE = "/match-score?uuid=%s";
-    private static final String JSP_NEW_MATCH = "/new-match.jsp";
+    private static final String VIEW_NEW_MATCH = "new-match";
     private OngoingMatchesService ongoingMatchesService;
 
     @Override
@@ -25,7 +25,7 @@ public class NewMatchServlet extends BaseServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher(JSP_NEW_MATCH).forward(req, resp);
+        renderView(req, resp, VIEW_NEW_MATCH);
     }
 
     @Override
@@ -45,6 +45,6 @@ public class NewMatchServlet extends BaseServlet {
 
     @Override
     protected String getErrorPath() {
-        return JSP_NEW_MATCH;
+        return VIEW_NEW_MATCH;
     }
 }

@@ -11,6 +11,7 @@ import java.io.IOException;
 
 public abstract class BaseServlet extends HttpServlet {
     private static final String ERROR_ATTRIBUTE = "error";
+    private static final String VIEW_PATH_TEMPLATE = "/WEB-INF/%s.jsp";
 
     protected abstract String getErrorPath();
 
@@ -26,9 +27,14 @@ public abstract class BaseServlet extends HttpServlet {
 
     }
 
-    private void handleError(HttpServletRequest req, HttpServletResponse resp, String path, String errorMessage, int status) throws IOException, ServletException {
+    private void handleError(HttpServletRequest req, HttpServletResponse resp, String viewName, String errorMessage, int status) throws IOException, ServletException {
         req.setAttribute(ERROR_ATTRIBUTE, errorMessage);
         resp.setStatus(status);
+        renderView(req, resp, viewName);
+    }
+
+    protected void renderView(HttpServletRequest req, HttpServletResponse resp, String viewName) throws ServletException, IOException {
+        String path = VIEW_PATH_TEMPLATE.formatted(viewName);
         req.getRequestDispatcher(path).forward(req, resp);
     }
 }

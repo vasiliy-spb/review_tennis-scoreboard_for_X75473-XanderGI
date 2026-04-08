@@ -13,7 +13,7 @@ import java.io.IOException;
 
 @WebServlet("/matches")
 public class MatchesServlet extends BaseServlet {
-    private static final String JSP_MATCHES = "/matches.jsp";
+    private static final String VIEW_MATCHES = "matches";
     private FinishedMatchesPersistenceService finishedMatchesService;
 
     @Override
@@ -33,11 +33,11 @@ public class MatchesServlet extends BaseServlet {
         req.setAttribute("dto", dto);
         req.setAttribute("pageNumber", pageNumber);
         req.setAttribute("filterName", filterName);
-        req.getRequestDispatcher(JSP_MATCHES).forward(req, resp);
+        renderView(req, resp, VIEW_MATCHES);
     }
 
     @Override
     protected String getErrorPath() {
-        return JSP_MATCHES;
+        return VIEW_MATCHES;
     }
 }
