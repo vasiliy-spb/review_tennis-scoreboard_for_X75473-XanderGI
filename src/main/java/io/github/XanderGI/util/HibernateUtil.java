@@ -16,6 +16,16 @@ public class HibernateUtil {
     private static SessionFactory sessionFactory;
 
     public static void init() {
+        String username = System.getenv("DB_USERNAME");
+        String password = System.getenv("DB_PASSWORD");
+
+        if (username == null || password == null) {
+            throw new IllegalStateException("Environment variables DB_USERNAME and DB_PASSWORD must be set!");
+        }
+
+        configuration.setProperty("hibernate.connection.username", username);
+        configuration.setProperty("hibernate.connection.password", password);
+
         configuration.addAnnotatedClasses(Player.class, Match.class);
         sessionFactory = configuration.buildSessionFactory();
     }
