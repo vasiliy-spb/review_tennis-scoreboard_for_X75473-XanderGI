@@ -1,3 +1,6 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%--@elvariable id="error" type="java.lang.String"--%>
+
 <html>
 <head>
     <meta charset="UTF-8">
@@ -6,23 +9,23 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
 
-    <script src="js/app.js"></script>
+    <script src="${pageContext.request.contextPath}/js/app.js"></script>
 </head>
 <body>
 <header class="header">
     <section class="nav-header">
         <div class="brand">
             <div class="nav-toggle">
-                <img src="images/menu.png" alt="Logo" class="logo">
+                <img src="${pageContext.request.contextPath}/images/menu.png" alt="Logo" class="logo">
             </div>
             <span class="logo-text">TennisScoreboard</span>
         </div>
         <div>
             <nav class="nav-links">
-                <a class="nav-link" href="/">Home</a>
-                <a class="nav-link" href="/matches">Matches</a>
+                <a class="nav-link" href="${pageContext.request.contextPath}/">Home</a>
+                <a class="nav-link" href="${pageContext.request.contextPath}/matches">Matches</a>
             </nav>
         </div>
     </section>
@@ -33,14 +36,14 @@
             <h1>Start new match</h1>
             <div class="new-match-image"></div>
             <div class="form-container center">
-                <form method="post" action="/new-match">
-                    <p style="color: red;">${error}</p>
+                <form method="post" action="${pageContext.request.contextPath}/new-match">
+                    <p style="color: red;"><c:out value="${error}"/></p>
                     <label class="label-player" for="playerOne">Player one</label>
-                    <input class="input-player" name="firstName" placeholder="Name" type="text" required
-                           title="Enter a name" value="${param.firstName}">
+                    <input id="playerOne" class="input-player" name="firstName" placeholder="Name" type="text" required
+                           title="Enter a name" value="<c:out value="${param.firstName}"/>">
                     <label class="label-player" for="playerTwo">Player two</label>
-                    <input class="input-player" name="secondName" placeholder="Name" type="text" required
-                           title="Enter a name" value="${param.secondName}">
+                    <input id="playerTwo" class="input-player" name="secondName" placeholder="Name" type="text" required
+                           title="Enter a name" value="<c:out value="${param.secondName}"/>">
                     <input class="form-button" type="submit" value="Start">
                 </form>
             </div>
