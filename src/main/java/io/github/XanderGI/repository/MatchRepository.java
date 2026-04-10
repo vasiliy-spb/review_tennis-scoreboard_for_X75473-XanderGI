@@ -4,10 +4,7 @@ import io.github.XanderGI.entity.Match;
 import io.github.XanderGI.entity.Player;
 import io.github.XanderGI.model.MatchScore;
 import io.github.XanderGI.util.HibernateUtil;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.*;
 import org.hibernate.Session;
 
 import java.util.ArrayList;
@@ -37,6 +34,10 @@ public class MatchRepository {
         CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
         CriteriaQuery<Match> criteria = criteriaBuilder.createQuery(Match.class);
         Root<Match> matchRoot = criteria.from(Match.class);
+
+        matchRoot.fetch("playerOne", JoinType.INNER);
+        matchRoot.fetch("playerTwo", JoinType.INNER);
+        matchRoot.fetch("winner", JoinType.LEFT);
 
         criteria.select(matchRoot);
 
