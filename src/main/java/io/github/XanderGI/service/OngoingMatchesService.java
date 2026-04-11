@@ -2,7 +2,6 @@ package io.github.XanderGI.service;
 
 import io.github.XanderGI.entity.Player;
 import io.github.XanderGI.exception.InvalidMatchException;
-import io.github.XanderGI.exception.MatchRepositoryException;
 import io.github.XanderGI.infrastructure.transaction.TransactionRunner;
 import io.github.XanderGI.model.MatchScore;
 import io.github.XanderGI.model.PlayerScore;
@@ -16,35 +15,18 @@ import java.util.UUID;
 
 @RequiredArgsConstructor
 public class OngoingMatchesService {
-    private static final int MAX_RETRIES = 3;
     private final OngoingMatchRepository ongoingMatchRepository;
     private final PlayerRepository playerRepository;
     private final TransactionRunner transactionRunner;
 
-    //todo: add logging framework
     public UUID create(String nameOne, String nameTwo) {
         if (nameOne.equalsIgnoreCase(nameTwo)) {
             throw new InvalidMatchException("The names of the players must be different");
         }
 
-        RuntimeException lastException = null;
-        for (int i = 1; i <= MAX_RETRIES; i++) {
-            try {
-                MatchScore matchScore = transactionRunner.execute(() -> executeMatchCreationLogic(nameOne, nameTwo));
+        MatchScore matchScore = executeMatchCreationLogic(nameOne, nameTwo);
 
-                return ongoingMatchRepository.add(matchScore);
-            } catch (RuntimeException e) {
-                if (!isConstraintViolation(e)) {
-                    throw new MatchRepositoryException("Fatal error database", e);
-                }
-
-                lastException = e;
-                // replace logging
-                System.err.printf("Collision detected for %s and %s. Retrying attempt %d%n", nameOne, nameTwo, i);
-            }
-        }
-
-        throw new MatchRepositoryException("Couldn't create a match after " + MAX_RETRIES + " attempts", lastException);
+        return ongoingMatchRepository.add(matchScore);
     }
 
     public Optional<MatchScore> get(UUID matchId) {
@@ -56,8 +38,16 @@ public class OngoingMatchesService {
     }
 
     private Player getOrCreatePlayer(String name) {
-        return playerRepository.findByName(name)
-                .orElseGet(() -> playerRepository.save(new Player(null, name)));
+        try {
+            return transactionRunner.execute(() -> playerRepository.save(new Player(null, name)));
+        } catch (RuntimeException e) {
+            if (isConstraintViolation(e)) {
+                return transactionRunner.execute(() -> playerRepository.findByName(name))
+                        .orElseThrow(() -> new IllegalStateException("Player must exist after constraint violation: " + name));
+            }
+
+            throw e;
+        }
     }
 
     private MatchScore executeMatchCreationLogic(String nameOne, String nameTwo) {
