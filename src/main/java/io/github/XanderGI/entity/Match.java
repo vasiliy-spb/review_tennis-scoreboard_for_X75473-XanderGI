@@ -25,4 +25,22 @@ public class Match {
     @ManyToOne
     @JoinColumn(name = "Winner")
     private Player winner;
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (!(obj instanceof Match match)) {
+            return false;
+        }
+
+        return getId() != null && getId().equals(match.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }
