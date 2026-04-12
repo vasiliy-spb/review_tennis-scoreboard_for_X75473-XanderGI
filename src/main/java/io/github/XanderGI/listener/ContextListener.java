@@ -4,6 +4,8 @@ import io.github.XanderGI.infrastructure.transaction.TransactionRunner;
 import io.github.XanderGI.repository.MatchRepository;
 import io.github.XanderGI.repository.OngoingMatchRepository;
 import io.github.XanderGI.repository.PlayerRepository;
+import io.github.XanderGI.repository.impl.HibernateMatchRepository;
+import io.github.XanderGI.repository.impl.HibernatePlayerRepository;
 import io.github.XanderGI.repository.impl.InMemoryOngoingMatchRepository;
 import io.github.XanderGI.service.FinishedMatchesPersistenceService;
 import io.github.XanderGI.service.MatchFacadeService;
@@ -25,8 +27,8 @@ public class ContextListener implements ServletContextListener {
         HibernateUtil.init();
 
         OngoingMatchRepository ongoingMatchRepository = new InMemoryOngoingMatchRepository();
-        PlayerRepository playerRepository = new PlayerRepository();
-        MatchRepository matchRepository = new MatchRepository();
+        PlayerRepository playerRepository = new HibernatePlayerRepository();
+        MatchRepository matchRepository = new HibernateMatchRepository();
         TransactionRunner transactionRunner = new TransactionRunner();
 
         OngoingMatchesService ongoingMatchesService = new OngoingMatchesService(ongoingMatchRepository, playerRepository, transactionRunner);
