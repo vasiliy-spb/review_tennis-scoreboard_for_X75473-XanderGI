@@ -19,7 +19,7 @@ public class TransactionRunner {
             transaction.commit();
 
             return result;
-        } catch (RuntimeException e) {
+        } catch (RuntimeException | Error e) {
             if (transaction != null && transaction.isActive()) {
                 transaction.rollback();
             }
