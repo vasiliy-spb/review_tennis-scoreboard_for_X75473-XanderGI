@@ -11,6 +11,7 @@ import java.io.IOException;
 
 public abstract class BaseServlet extends HttpServlet {
     private static final String ERROR_ATTRIBUTE = "error";
+    private static final String VIEW_SERVER_ERROR = "server-error";
     private static final String VIEW_PATH_TEMPLATE = "/WEB-INF/%s.jsp";
 
     protected abstract String getErrorPath();
@@ -23,6 +24,8 @@ public abstract class BaseServlet extends HttpServlet {
             handleError(req, resp, getErrorPath(), e.getMessage(), HttpServletResponse.SC_BAD_REQUEST);
         } catch (MatchNotFoundException e) {
             handleError(req, resp, getErrorPath(), e.getMessage(), HttpServletResponse.SC_NOT_FOUND);
+        } catch (Exception e) {
+            handleError(req, resp, VIEW_SERVER_ERROR, e.getMessage(), HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
 
     }
