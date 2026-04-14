@@ -42,7 +42,9 @@
                    value="<c:out value="${filterName}"/>"/>
             <div class="filter-buttons-group">
                 <button type="submit" class="btn-filter">Find</button>
-                <a class="btn-filter" href="${pageContext.request.contextPath}/matches">Reset Filter</a>
+                <c:if test="${not empty filterName}">
+                    <a class="btn-filter" href="${pageContext.request.contextPath}/matches">Reset Filter</a>
+                </c:if>
             </div>
         </form>
         <c:if test="${not empty error}">
