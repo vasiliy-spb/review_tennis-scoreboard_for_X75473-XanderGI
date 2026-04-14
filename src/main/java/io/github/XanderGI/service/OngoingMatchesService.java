@@ -39,7 +39,8 @@ public class OngoingMatchesService {
 
     private Player getOrCreatePlayer(String name) {
         try {
-            return transactionRunner.execute(() -> playerRepository.save(new Player(null, name)));
+            return transactionRunner.execute(() -> playerRepository.findByName(name)
+                    .orElseGet(() -> playerRepository.save(new Player(null, name))));
         } catch (RuntimeException e) {
             if (isConstraintViolation(e)) {
                 return transactionRunner.execute(() -> playerRepository.findByName(name))
