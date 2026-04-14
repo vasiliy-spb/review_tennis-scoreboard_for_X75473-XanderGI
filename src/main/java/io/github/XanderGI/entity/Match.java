@@ -11,7 +11,10 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "Matches")
+@Table(name = "Matches", check = {
+        @CheckConstraint(name = "chk_matches_players_not_equal", constraint = "Player1 <> Player2"),
+        @CheckConstraint(name = "chk_matches_valid_winner", constraint = "Winner = Player1 OR Winner = Player2")
+})
 public class Match {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
