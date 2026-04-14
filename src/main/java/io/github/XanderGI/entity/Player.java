@@ -4,10 +4,9 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Getter
-@Setter
 @AllArgsConstructor
-@EqualsAndHashCode (onlyExplicitlyIncluded = true)
-@NoArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "Players")
 public class Player {

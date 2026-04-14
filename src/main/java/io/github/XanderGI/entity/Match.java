@@ -1,15 +1,14 @@
 package io.github.XanderGI.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Getter
-@Setter
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "Matches", check = {
         @CheckConstraint(name = "chk_matches_players_not_equal", constraint = "Player1 <> Player2"),
