@@ -50,6 +50,8 @@ public class HibernateMatchRepository implements MatchRepository {
             criteria.where(criteriaBuilder.and(predicates));
         }
 
+        criteria.orderBy(criteriaBuilder.desc(matchRoot.get("id")));
+
         return session.createQuery(criteria)
                 .setFirstResult(offset)
                 .setMaxResults(limit)
