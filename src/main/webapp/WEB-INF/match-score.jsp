@@ -87,7 +87,6 @@
                                 <td class="table-text"><c:out value="${match.playerOne.displayPoints}"/></td>
                                 <td class="table-text">
                                     <form method="post" action="${pageContext.request.contextPath}/match-score?uuid=${uuid}">
-                                        <input type="hidden" name="uuid" value="<c:out value="${uuid}"/>">
                                         <input type="hidden" name="playerId" value="<c:out value="${match.playerOne.id}"/>">
                                         <input class="score-btn" type="submit" value="Score">
                                     </form>
@@ -100,7 +99,6 @@
                                 <td class="table-text"><c:out value="${match.playerTwo.displayPoints}"/></td>
                                 <td class="table-text">
                                     <form method="post" action="${pageContext.request.contextPath}/match-score?uuid=${uuid}">
-                                        <input type="hidden" name="uuid" value="<c:out value="${uuid}"/>">
                                         <input type="hidden" name="playerId" value="<c:out value="${match.playerTwo.id}"/>">
                                         <input class="score-btn" type="submit" value="Score">
                                     </form>
