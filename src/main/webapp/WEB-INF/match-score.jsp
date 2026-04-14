@@ -61,7 +61,7 @@
                         </table>
                     </div>
                 </section>
-                <a href="${pageContext.request.contextPath}" class="home-btn">HOME</a>
+                <a href="${pageContext.request.contextPath}/" class="home-btn">HOME</a>
             </div>
         </c:when>
         <c:otherwise>
