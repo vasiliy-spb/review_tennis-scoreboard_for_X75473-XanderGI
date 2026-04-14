@@ -8,7 +8,7 @@ import org.hibernate.Session;
 import java.util.Optional;
 
 public class HibernatePlayerRepository implements PlayerRepository {
-    private static final String FIND_BY_NAME = "FROM Player WHERE name = :playerName";
+    private static final String FIND_BY_NAME = "FROM Player WHERE LOWER(name) = LOWER(:playerName)";
 
     @Override
     public Optional<Player> findByName(String name) {
