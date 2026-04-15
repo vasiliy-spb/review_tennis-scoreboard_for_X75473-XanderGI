@@ -7,22 +7,30 @@ import io.github.XanderGI.entity.Match;
 import io.github.XanderGI.entity.Player;
 import io.github.XanderGI.model.MatchScore;
 import io.github.XanderGI.model.PlayerScore;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.factory.Mappers;
 
-public class MatchMapper {
-    public static MatchDto toMatchDto(Match match) {
-        return new MatchDto(
-                match.getPlayerOne().getName(),
-                match.getPlayerTwo().getName(),
-                match.getWinner().getName()
-        );
-    }
+@Mapper
+public interface MatchMapper {
+    MatchMapper INSTANCE = Mappers.getMapper(MatchMapper.class);
 
-    public static MatchScoreDto toMatchScoreDto(MatchScore matchScore) {
+    @Mapping(source = "playerOne.name", target = "playerOneName")
+    @Mapping(source = "playerTwo.name", target = "playerTwoName")
+    @Mapping(source = "winner.name", target = "winnerName")
+    MatchDto toMatchDto(Match match);
+
+    @Mapping(source = "displayPoints", target = "displayPoints")
+    @Mapping(source = "playerScore.game", target = "games")
+    @Mapping(source = "playerScore.set", target = "sets")
+    PlayerItemDto buildPlayerDto(Player player, PlayerScore playerScore, String displayPoints);
+
+    default MatchScoreDto toMatchScoreDto(MatchScore matchScore) {
         String pointsByPlayerOne = getDisplayPoints(matchScore, matchScore.getPlayerScoreOne());
         String pointsByPlayerTwo = getDisplayPoints(matchScore, matchScore.getPlayerScoreTwo());
 
-        PlayerItemDto playerOneDto = toPlayerItemDto(matchScore.getPlayerOne(), matchScore.getPlayerScoreOne(), pointsByPlayerOne);
-        PlayerItemDto playerTwoDto = toPlayerItemDto(matchScore.getPlayerTwo(), matchScore.getPlayerScoreTwo(), pointsByPlayerTwo);
+        PlayerItemDto playerOneDto = buildPlayerDto(matchScore.getPlayerOne(), matchScore.getPlayerScoreOne(), pointsByPlayerOne);
+        PlayerItemDto playerTwoDto = buildPlayerDto(matchScore.getPlayerTwo(), matchScore.getPlayerScoreTwo(), pointsByPlayerTwo);
 
         String winnerName = matchScore.getWinner()
                 .map(Player::getName)
@@ -36,17 +44,7 @@ public class MatchMapper {
         );
     }
 
-    private static PlayerItemDto toPlayerItemDto(Player player, PlayerScore playerScore, String displayPoints) {
-        return new PlayerItemDto(
-                player.getId(),
-                player.getName(),
-                displayPoints,
-                playerScore.getGame(),
-                playerScore.getSet()
-        );
-    }
-
-    private static String getDisplayPoints(MatchScore matchScore, PlayerScore playerScore) {
+    private String getDisplayPoints(MatchScore matchScore, PlayerScore playerScore) {
         if (matchScore.isTieBreak()) {
             return String.valueOf(playerScore.getTieBreakPoint());
         } else {

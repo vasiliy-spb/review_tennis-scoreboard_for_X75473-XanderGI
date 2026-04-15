@@ -19,6 +19,7 @@ public class FinishedMatchesPersistenceService {
     private static final int PAGE_SIZE = 5;
     private final MatchRepository matchRepository;
     private final TransactionRunner transactionRunner;
+    private final MatchMapper mapper;
 
     public void save(MatchScore matchScore) {
         if (!matchScore.isMatchOver()) {
@@ -44,7 +45,7 @@ public class FinishedMatchesPersistenceService {
                         List<String> tokens = SearchUtil.tokenize(filterName);
 
                         List<MatchDto> matches = matchRepository.findMatches(offset, PAGE_SIZE, tokens).stream()
-                                .map(MatchMapper::toMatchDto)
+                                .map(mapper::toMatchDto)
                                 .toList();
                         Long countOfMatches = matchRepository.countMatchesByTokens(tokens);
                         int totalPages = calculateTotalPages(countOfMatches);

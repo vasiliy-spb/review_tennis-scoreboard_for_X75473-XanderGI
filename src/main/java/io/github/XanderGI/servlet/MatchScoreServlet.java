@@ -23,11 +23,13 @@ public class MatchScoreServlet extends BaseServlet {
     private static final String VIEW_MATCH_SCORE = "match-score";
     private OngoingMatchesService ongoingMatchesService;
     private MatchFacadeService matchFacadeService;
+    private MatchMapper mapper;
 
     @Override
     public void init() {
         ongoingMatchesService = (OngoingMatchesService) getServletContext().getAttribute(ContextListener.ONGOING_MATCHES_SERVICE);
         matchFacadeService = (MatchFacadeService) getServletContext().getAttribute(ContextListener.MATCH_FACADE_SERVICE);
+        mapper = (MatchMapper) getServletContext().getAttribute(ContextListener.MATCH_MAPPER);
     }
 
     @Override
@@ -37,7 +39,7 @@ public class MatchScoreServlet extends BaseServlet {
         UUID matchId = ValidationUtil.parseUUID(stringMatchId);
 
         MatchScoreDto dto = ongoingMatchesService.get(matchId)
-                .map(MatchMapper::toMatchScoreDto)
+                .map(mapper::toMatchScoreDto)
                 .orElseThrow(() -> new MatchNotFoundException("Match not found"));
 
         renderMatchScore(req, resp, matchId, dto);
@@ -54,7 +56,7 @@ public class MatchScoreServlet extends BaseServlet {
         MatchScore matchScore = matchFacadeService.playRally(matchId, playerId);
 
         if (matchScore.isMatchOver()) {
-            MatchScoreDto dto = MatchMapper.toMatchScoreDto(matchScore);
+            MatchScoreDto dto = mapper.toMatchScoreDto(matchScore);
             renderMatchScore(req, resp, matchId, dto);
             return;
         }
