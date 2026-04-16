@@ -6,10 +6,12 @@ import io.github.XanderGI.model.MatchScore;
 import io.github.XanderGI.model.PlayerScore;
 import io.github.XanderGI.repository.OngoingMatchRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Optional;
 import java.util.UUID;
 
+@Slf4j
 @RequiredArgsConstructor
 public class OngoingMatchesService {
     private final OngoingMatchRepository ongoingMatchRepository;
@@ -30,7 +32,11 @@ public class OngoingMatchesService {
                 PlayerScore.matchStart()
         );
 
-        return ongoingMatchRepository.add(matchScore);
+        UUID uuid = ongoingMatchRepository.add(matchScore);
+
+        log.info("[Match {}] Created: {} vs {}", uuid, playerOne.getName(), playerTwo.getName());
+
+        return uuid;
     }
 
     public Optional<MatchScore> get(UUID matchId) {

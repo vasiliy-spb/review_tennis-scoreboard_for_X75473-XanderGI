@@ -11,9 +11,11 @@ import io.github.XanderGI.model.MatchScore;
 import io.github.XanderGI.repository.MatchRepository;
 import io.github.XanderGI.util.SearchUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 public class FinishedMatchesPersistenceService {
     private static final int PAGE_SIZE = 5;
@@ -28,6 +30,10 @@ public class FinishedMatchesPersistenceService {
 
         try {
             transactionRunner.execute(() -> matchRepository.save(matchScore));
+
+            String firstPlayerName = matchScore.getPlayerOne().getName();
+            String secondPlayerName = matchScore.getPlayerTwo().getName();
+            log.info("Match successfully saved into DB: {} vs {}", firstPlayerName, secondPlayerName);
         } catch (RuntimeException e) {
             throw new MatchPersistenceException("Couldn't finishMatch match", e);
         }

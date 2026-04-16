@@ -1,11 +1,14 @@
 package io.github.XanderGI.service;
 
+import io.github.XanderGI.entity.Player;
 import io.github.XanderGI.exception.MatchNotFoundException;
 import io.github.XanderGI.model.MatchScore;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.UUID;
 
+@Slf4j
 @RequiredArgsConstructor
 public class MatchFacadeService {
     private final OngoingMatchesService ongoingMatchesService;
@@ -26,6 +29,12 @@ public class MatchFacadeService {
             if (matchScore.isMatchOver()) {
                 finishedMatchesService.save(matchScore);
                 ongoingMatchesService.remove(matchId);
+
+                String winnerName = matchScore.getWinner()
+                        .map(Player::getName)
+                        .orElse("<UNKNOWN_WINNER_STATE>");
+
+                log.info("[Match {}] finished with winner: {}", matchId, winnerName);
             }
         }
 

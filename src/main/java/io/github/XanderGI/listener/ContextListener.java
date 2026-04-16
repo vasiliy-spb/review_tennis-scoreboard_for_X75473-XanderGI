@@ -13,7 +13,9 @@ import io.github.XanderGI.util.HibernateUtil;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @WebListener
 public class ContextListener implements ServletContextListener {
     public static final String ONGOING_MATCHES_SERVICE = "ongoingMatchesService";
@@ -42,6 +44,8 @@ public class ContextListener implements ServletContextListener {
         sce.getServletContext().setAttribute(FINISHED_MATCHES_SERVICE, finishedMatchesService);
         sce.getServletContext().setAttribute(MATCH_FACADE_SERVICE, matchFacadeService);
         sce.getServletContext().setAttribute(MATCH_MAPPER, matchMapper);
+
+        log.info("Application context initialized");
     }
 
     @Override

@@ -6,9 +6,11 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 
+@Slf4j
 public abstract class BaseServlet extends HttpServlet {
     private static final String ERROR_ATTRIBUTE = "error";
     private static final String VIEW_SERVER_ERROR = "server-error";
@@ -26,6 +28,7 @@ public abstract class BaseServlet extends HttpServlet {
             handleError(req, resp, getErrorPath(), e.getMessage(), HttpServletResponse.SC_NOT_FOUND);
         } catch (Exception e) {
             handleError(req, resp, VIEW_SERVER_ERROR, e.getMessage(), HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            log.error("Failed to process request: {}", e.getMessage(), e);
         }
 
     }

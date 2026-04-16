@@ -35,6 +35,11 @@ dependencies {
     // Source: https://mvnrepository.com/artifact/org.mapstruct/mapstruct-processor
     annotationProcessor("org.mapstruct:mapstruct-processor:1.6.3")
 
+    // Source: https://mvnrepository.com/artifact/org.slf4j/slf4j-api
+    implementation("org.slf4j:slf4j-api:2.0.17")
+    // Source: https://mvnrepository.com/artifact/ch.qos.logback/logback-classic
+    runtimeOnly("ch.qos.logback:logback-classic:1.5.32")
+
 
     // Source: https://mvnrepository.com/artifact/org.mockito/mockito-core
     testImplementation("org.mockito:mockito-core:5.18.0")
