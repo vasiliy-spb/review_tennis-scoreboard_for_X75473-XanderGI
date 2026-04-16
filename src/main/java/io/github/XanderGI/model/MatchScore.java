@@ -1,13 +1,14 @@
 package io.github.XanderGI.model;
 
 import io.github.XanderGI.entity.Player;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
+import java.time.Instant;
 import java.util.Optional;
 
 @Getter
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class MatchScore {
     private final static int GAMES_TO_WIN_SET = 6;
     private final static int SETS_TO_WIN_MATCH = 2;
@@ -16,8 +17,9 @@ public class MatchScore {
 
     private final Player playerOne;
     private final Player playerTwo;
-    private PlayerScore playerScoreOne;
-    private PlayerScore playerScoreTwo;
+    private final PlayerScore playerScoreOne;
+    private final PlayerScore playerScoreTwo;
+    private Instant lastActivityAt = Instant.now();
 
     public boolean isMatchOver() {
         return playerScoreOne.getSet().equals(SETS_TO_WIN_MATCH) || playerScoreTwo.getSet().equals(SETS_TO_WIN_MATCH);
@@ -37,6 +39,8 @@ public class MatchScore {
         if (isMatchOver()) {
             return;
         }
+
+        lastActivityAt = Instant.now();
 
         PlayerScore winner;
         PlayerScore loser;

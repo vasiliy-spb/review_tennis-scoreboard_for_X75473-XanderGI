@@ -11,4 +11,6 @@ public interface OngoingMatchRepository {
     UUID add(MatchScore matchScore);
 
     void remove(UUID matchId);
+
+    void removeStaleMatches(long expirationMinutes);
 }

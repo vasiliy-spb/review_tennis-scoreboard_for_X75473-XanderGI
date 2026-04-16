@@ -15,6 +15,10 @@ import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 @Slf4j
 @WebListener
 public class ContextListener implements ServletContextListener {
@@ -22,6 +26,10 @@ public class ContextListener implements ServletContextListener {
     public static final String FINISHED_MATCHES_SERVICE = "finishedMatchesService";
     public static final String MATCH_FACADE_SERVICE = "matchFacadeService";
     public static final String MATCH_MAPPER = "matchMapper";
+    private static final int STALE_MATCH_LIFETIME_MINUTES = 60;
+    public static final int CLEANUP_INITIAL_DELAY = 5;
+    public static final int CLEANUP_PERIOD = 30;
+    private ScheduledExecutorService scheduler;
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
@@ -40,6 +48,12 @@ public class ContextListener implements ServletContextListener {
         MatchScoreCalculationService calculationMatchService = new MatchScoreCalculationService();
         MatchFacadeService matchFacadeService = new MatchFacadeService(ongoingMatchesService, calculationMatchService, finishedMatchesService);
 
+        scheduler = Executors.newSingleThreadScheduledExecutor();
+        scheduler.scheduleWithFixedDelay(() -> ongoingMatchRepository.removeStaleMatches(STALE_MATCH_LIFETIME_MINUTES),
+                CLEANUP_INITIAL_DELAY,
+                CLEANUP_PERIOD,
+                TimeUnit.MINUTES);
+
         sce.getServletContext().setAttribute(ONGOING_MATCHES_SERVICE, ongoingMatchesService);
         sce.getServletContext().setAttribute(FINISHED_MATCHES_SERVICE, finishedMatchesService);
         sce.getServletContext().setAttribute(MATCH_FACADE_SERVICE, matchFacadeService);
@@ -50,6 +64,10 @@ public class ContextListener implements ServletContextListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
+        if (scheduler != null) {
+            scheduler.shutdownNow();
+        }
+
         HibernateUtil.close();
     }
 }
