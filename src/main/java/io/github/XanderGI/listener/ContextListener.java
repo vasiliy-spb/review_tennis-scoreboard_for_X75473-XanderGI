@@ -1,5 +1,6 @@
 package io.github.XanderGI.listener;
 
+import io.github.XanderGI.config.AppConfig;
 import io.github.XanderGI.infrastructure.transaction.TransactionRunner;
 import io.github.XanderGI.mapper.MatchMapper;
 import io.github.XanderGI.repository.MatchRepository;
@@ -14,6 +15,7 @@ import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
 import lombok.extern.slf4j.Slf4j;
+import org.flywaydb.core.Flyway;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -26,40 +28,51 @@ public class ContextListener implements ServletContextListener {
     public static final String FINISHED_MATCHES_SERVICE = "finishedMatchesService";
     public static final String MATCH_FACADE_SERVICE = "matchFacadeService";
     public static final String MATCH_MAPPER = "matchMapper";
-    private static final int STALE_MATCH_LIFETIME_MINUTES = 60;
     public static final int CLEANUP_INITIAL_DELAY = 5;
-    public static final int CLEANUP_PERIOD = 30;
     private ScheduledExecutorService scheduler;
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        HibernateUtil.init();
+        try {
+            AppConfig config = AppConfig.loadFromEnvironment();
 
-        OngoingMatchRepository ongoingMatchRepository = new InMemoryOngoingMatchRepository();
-        PlayerRepository playerRepository = new HibernatePlayerRepository();
-        MatchRepository matchRepository = new HibernateMatchRepository();
-        TransactionRunner transactionRunner = new TransactionRunner();
+            Flyway.configure()
+                    .dataSource(config.dbUrl(), config.dbUsername(), config.dbPassword())
+                    .load().
+                    migrate();
 
-        MatchMapper matchMapper = MatchMapper.INSTANCE;
+            HibernateUtil.init(config);
 
-        PlayerService playerService = new PlayerService(playerRepository, transactionRunner);
-        OngoingMatchesService ongoingMatchesService = new OngoingMatchesService(ongoingMatchRepository, playerService);
-        FinishedMatchesPersistenceService finishedMatchesService = new FinishedMatchesPersistenceService(matchRepository, transactionRunner, matchMapper);
-        MatchScoreCalculationService calculationMatchService = new MatchScoreCalculationService();
-        MatchFacadeService matchFacadeService = new MatchFacadeService(ongoingMatchesService, calculationMatchService, finishedMatchesService);
 
-        scheduler = Executors.newSingleThreadScheduledExecutor();
-        scheduler.scheduleWithFixedDelay(() -> ongoingMatchRepository.removeStaleMatches(STALE_MATCH_LIFETIME_MINUTES),
-                CLEANUP_INITIAL_DELAY,
-                CLEANUP_PERIOD,
-                TimeUnit.MINUTES);
+            OngoingMatchRepository ongoingMatchRepository = new InMemoryOngoingMatchRepository();
+            PlayerRepository playerRepository = new HibernatePlayerRepository();
+            MatchRepository matchRepository = new HibernateMatchRepository();
+            TransactionRunner transactionRunner = new TransactionRunner();
 
-        sce.getServletContext().setAttribute(ONGOING_MATCHES_SERVICE, ongoingMatchesService);
-        sce.getServletContext().setAttribute(FINISHED_MATCHES_SERVICE, finishedMatchesService);
-        sce.getServletContext().setAttribute(MATCH_FACADE_SERVICE, matchFacadeService);
-        sce.getServletContext().setAttribute(MATCH_MAPPER, matchMapper);
+            MatchMapper matchMapper = MatchMapper.INSTANCE;
 
-        log.info("Application context initialized");
+            PlayerService playerService = new PlayerService(playerRepository, transactionRunner);
+            OngoingMatchesService ongoingMatchesService = new OngoingMatchesService(ongoingMatchRepository, playerService);
+            FinishedMatchesPersistenceService finishedMatchesService = new FinishedMatchesPersistenceService(matchRepository, transactionRunner, matchMapper);
+            MatchScoreCalculationService calculationMatchService = new MatchScoreCalculationService();
+            MatchFacadeService matchFacadeService = new MatchFacadeService(ongoingMatchesService, calculationMatchService, finishedMatchesService);
+
+            scheduler = Executors.newSingleThreadScheduledExecutor();
+            scheduler.scheduleWithFixedDelay(() -> ongoingMatchRepository.removeStaleMatches(config.staleMatchLifetimeMinutes()),
+                    CLEANUP_INITIAL_DELAY,
+                    config.cleanupPeriodMinutes(),
+                    TimeUnit.MINUTES);
+
+            sce.getServletContext().setAttribute(ONGOING_MATCHES_SERVICE, ongoingMatchesService);
+            sce.getServletContext().setAttribute(FINISHED_MATCHES_SERVICE, finishedMatchesService);
+            sce.getServletContext().setAttribute(MATCH_FACADE_SERVICE, matchFacadeService);
+            sce.getServletContext().setAttribute(MATCH_MAPPER, matchMapper);
+
+            log.info("Application context initialized");
+        } catch (Exception e) {
+            throw new RuntimeException("Application initialization failed", e);
+        }
+
     }
 
     @Override

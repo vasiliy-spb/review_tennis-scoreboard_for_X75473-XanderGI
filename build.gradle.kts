@@ -16,6 +16,8 @@ dependencies {
     compileOnly("jakarta.servlet:jakarta.servlet-api:6.0.0")
     // Source: https://mvnrepository.com/artifact/org.hibernate.orm/hibernate-core
     implementation("org.hibernate.orm:hibernate-core:7.2.4.Final")
+    // Source: https://mvnrepository.com/artifact/org.flywaydb/flyway-core
+    implementation("org.flywaydb:flyway-core:9.22.3")
     // Source: https://mvnrepository.com/artifact/com.h2database/h2
     runtimeOnly("com.h2database:h2:2.3.232")
     // Source: https://mvnrepository.com/artifact/jakarta.servlet.jsp.jstl/jakarta.servlet.jsp.jstl-api

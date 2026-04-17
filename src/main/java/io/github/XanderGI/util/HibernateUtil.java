@@ -1,5 +1,6 @@
 package io.github.XanderGI.util;
 
+import io.github.XanderGI.config.AppConfig;
 import io.github.XanderGI.entity.Match;
 import io.github.XanderGI.entity.Player;
 import lombok.AccessLevel;
@@ -15,16 +16,10 @@ public class HibernateUtil {
     @Getter
     private static SessionFactory sessionFactory;
 
-    public static void init() {
-        String username = System.getenv("DB_USERNAME");
-        String password = System.getenv("DB_PASSWORD");
-
-        if (username == null || password == null) {
-            throw new IllegalStateException("Environment variables DB_USERNAME and DB_PASSWORD must be set!");
-        }
-
-        configuration.setProperty("hibernate.connection.username", username);
-        configuration.setProperty("hibernate.connection.password", password);
+    public static void init(AppConfig config) {
+        configuration.setProperty("hibernate.connection.url", config.dbUrl());
+        configuration.setProperty("hibernate.connection.username", config.dbUsername());
+        configuration.setProperty("hibernate.connection.password", config.dbPassword());
 
         configuration.addAnnotatedClasses(Player.class, Match.class);
         sessionFactory = configuration.buildSessionFactory();
