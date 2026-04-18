@@ -18,7 +18,7 @@ import java.util.UUID;
 
 @WebServlet("/match-score")
 public class MatchScoreServlet extends BaseServlet {
-    private static final String REDIRECT_URL_TEMPLATE = "/match-score?uuid=%s";
+    private static final String REDIRECT_URL_TEMPLATE = "%s/match-score?uuid=%s";
     private static final String VIEW_NEW_MATCH = "new-match";
     private static final String VIEW_MATCH_SCORE = "match-score";
     private OngoingMatchesService ongoingMatchesService;
@@ -61,7 +61,7 @@ public class MatchScoreServlet extends BaseServlet {
             return;
         }
 
-        String url = REDIRECT_URL_TEMPLATE.formatted(matchId);
+        String url = REDIRECT_URL_TEMPLATE.formatted(req.getContextPath(), matchId);
         resp.sendRedirect(url);
     }
 
