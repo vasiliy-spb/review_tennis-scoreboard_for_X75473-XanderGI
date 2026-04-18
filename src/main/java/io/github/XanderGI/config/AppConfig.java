@@ -9,11 +9,11 @@ public record AppConfig(
 ) {
     public static AppConfig loadFromEnvironment() {
         return new AppConfig(
-                getRequiredEnv("DB_URL"),
-                getRequiredEnv("DB_USERNAME"),
-                getEnvOrDefault("DB_PASSWORD", ""),
-                Integer.parseInt(getEnvOrDefault("CLEANUP_PERIOD_MINUTES", "30")),
-                Integer.parseInt(getEnvOrDefault("STALE_MATCH_LIFETIME_MINUTES", "60"))
+                getRequiredEnv("TENNIS_DB_URL"),
+                getRequiredEnv("TENNIS_DB_USERNAME"),
+                getEnvOrDefault("TENNIS_DB_PASSWORD", ""),
+                Integer.parseInt(getEnvOrDefault("TENNIS_CLEANUP_PERIOD_MINUTES", "30")),
+                Integer.parseInt(getEnvOrDefault("TENNIS_STALE_MATCH_LIFETIME_MINUTES", "60"))
         );
     }
 
