@@ -108,16 +108,21 @@ cd TennisScoreboard
 │   │       ├───dto        // Объекты передачи данных для JSP
 │   │       ├───entity     // Hibernate JPA сущности (Player, Match)
 │   │       ├───exception  // бизнес-исключения
+│   │       ├───infrastructure // Обработка транзакций (TransactionRunner)
+│   │       ├───listener   // Инициализация приложения и Manual DI Container
+│   │       ├───mapper     // Интерфейсы MapStruct
 │   │       ├───model      // Доменная бизнес-логика (MatchScore, PlayerScore, Point)
 │   │       ├───repository // Интерфейсы и реализации репозиториев
 │   │       ├───service    // Слой сервисов (Facade, Calculation, Persistence)
-│   │       └───servlet    // Контроллеры 
+│   │       └───servlet    // Контроллеры
+│   │       └───utils      // Утилиты
 │   ├───resources
 │   │   ├───db.migration   // Миграции БД (Flyway)
 │   │   └───logback.xml    // Конфигурация логирования
 │   └───webapp
 │       ├───css            // Статические стили
 │       ├───images         // изображения
+│       ├───js             // js код
 │       └───WEB-INF        // JSP шаблоны
 └───test                   // Unit-тесты логики подсчета очков (JUnit 5 + Mockito)
 ```
