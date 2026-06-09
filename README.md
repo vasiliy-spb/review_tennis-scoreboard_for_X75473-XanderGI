@@ -1,3 +1,5 @@
+### [Ревью на реализацию проекта находится здесь](https://github.com/vasiliy-spb/review_tennis-scoreboard_for_X75473-XanderGI/blob/code-review/code-review/REVIEW_README.md)
+
 # Tennis Scoreboard
 
 Веб-приложение для ведения счета теннисных матчей, записи результатов и просмотра истории игр. Проект реализует архитектуру MVCS с использованием серверного рендеринга (SSR).
