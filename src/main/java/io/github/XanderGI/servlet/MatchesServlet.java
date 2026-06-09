@@ -13,11 +13,17 @@ import java.io.IOException;
 
 @WebServlet("/matches")
 public class MatchesServlet extends BaseServlet {
+
+    // Все повторяющиеся или важные строковые литералы лучше выносить в `private static final` константы с понятными именами.
+        // Именованная константа делает код более семантически понятным.
+
     private static final String VIEW_MATCHES = "matches";
     private FinishedMatchesPersistenceService finishedMatchesService;
 
     @Override
     public void init() {
+
+        // Для получения объектов из контекста можно использовать "естественные константы" — ClassName.class.getSimpleName() или ClassName.class.getName()
         finishedMatchesService = (FinishedMatchesPersistenceService) getServletContext().getAttribute(ContextListener.FINISHED_MATCHES_SERVICE);
     }
 
@@ -30,6 +36,7 @@ public class MatchesServlet extends BaseServlet {
 
         MatchesPageDto dto = finishedMatchesService.getMatchesPage(pageNumber, filterName);
 
+        // Можно добавить pageNumber и filterName в DTO и передавать все необходимые для JSP параметры в одном объекте.
         req.setAttribute("dto", dto);
         req.setAttribute("pageNumber", pageNumber);
         req.setAttribute("filterName", filterName);

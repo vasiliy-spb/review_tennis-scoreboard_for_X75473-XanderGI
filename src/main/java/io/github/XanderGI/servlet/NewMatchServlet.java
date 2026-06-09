@@ -14,12 +14,18 @@ import java.util.UUID;
 
 @WebServlet("/new-match")
 public class NewMatchServlet extends BaseServlet {
+
+    // Все повторяющиеся или важные строковые литералы лучше выносить в `private static final` константы с понятными именами.
+        // Именованная константа делает код более семантически понятным.
+
     private static final String REDIRECT_URL_TEMPLATE = "%s/match-score?uuid=%s";
     private static final String VIEW_NEW_MATCH = "new-match";
     private OngoingMatchesService ongoingMatchesService;
 
     @Override
     public void init() {
+
+        // Для получения объектов из контекста можно использовать "естественные константы" — ClassName.class.getSimpleName() или ClassName.class.getName()
         ongoingMatchesService = (OngoingMatchesService) getServletContext().getAttribute(ContextListener.ONGOING_MATCHES_SERVICE);
     }
 

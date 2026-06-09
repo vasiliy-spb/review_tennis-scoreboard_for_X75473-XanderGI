@@ -8,6 +8,9 @@ import java.util.function.Supplier;
 
 public class TransactionRunner {
 
+    // TODO: В блоке `catch` вызов `transaction.rollback()` не обёрнут в `try-catch`.
+        // (см. файл "transaction.md" в этом же пакете)
+
     public <T> T execute(Supplier<T> supplier) {
         Transaction transaction = null;
         try {

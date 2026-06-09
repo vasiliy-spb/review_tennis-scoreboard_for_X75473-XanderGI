@@ -87,6 +87,13 @@
                                 <td class="table-text"><c:out value="${match.playerOne.displayPoints}"/></td>
                                 <td class="table-text">
                                     <form method="post" action="${pageContext.request.contextPath}/match-score?uuid=${uuid}">
+                                        <!-- Если текст внутри двойных кавычек нужно заключить ещё в одни кавычки —
+                                        стоит использовать одинарные, иначе первая двойная кавычка считается закрывающей.
+                                        Сейчас так:
+                                            <input type="hidden" name="playerId" value="<c:out value="${match.playerOne.id}"/>">
+                                        Лучше так:
+                                            <input type="hidden" name="playerId" value="<c:out value='${match.playerOne.id}'/>">
+                                         -->
                                         <input type="hidden" name="playerId" value="<c:out value="${match.playerOne.id}"/>">
                                         <input class="score-btn" type="submit" value="Score">
                                     </form>
@@ -99,6 +106,13 @@
                                 <td class="table-text"><c:out value="${match.playerTwo.displayPoints}"/></td>
                                 <td class="table-text">
                                     <form method="post" action="${pageContext.request.contextPath}/match-score?uuid=${uuid}">
+                                        <!-- Если текст внутри двойных кавычек нужно заключить ещё в одни кавычки —
+                                        стоит использовать одинарные, иначе первая двойная кавычка считается закрывающей.
+                                        Сейчас так:
+                                            <input type="hidden" name="playerId" value="<c:out value="${match.playerTwo.id}"/>">
+                                        Лучше так:
+                                            <input type="hidden" name="playerId" value="<c:out value='${match.playerTwo.id}'/>">
+                                         -->
                                         <input type="hidden" name="playerId" value="<c:out value="${match.playerTwo.id}"/>">
                                         <input class="score-btn" type="submit" value="Score">
                                     </form>

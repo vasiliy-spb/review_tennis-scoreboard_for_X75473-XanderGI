@@ -12,6 +12,9 @@ import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class MatchScoreCalculationServiceTest {
+
+    // Класс MatchScoreCalculationService не содержит никакой логики — для него не нужен тест
+
     private Integer playerId;
 
     @BeforeEach

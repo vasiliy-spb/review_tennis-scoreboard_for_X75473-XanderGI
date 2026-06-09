@@ -20,6 +20,7 @@ public enum Point {
         };
     }
 
+    // Этот метод не должен знать о бизнес-правилах приложения (что после 40 и ниже нельзя вернуться обратно) — это обязанность клиентского кода
     Point prev() {
         return switch (this) {
             case ZERO, FIFTEEN, THIRTY, FORTY ->

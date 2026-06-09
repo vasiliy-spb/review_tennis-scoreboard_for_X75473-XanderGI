@@ -32,8 +32,24 @@ public class InMemoryOngoingMatchRepository implements OngoingMatchRepository {
         matches.remove(matchId);
     }
 
+    // Этот метод (и класс) не должен вычислять пороговое время удаления — лучше принимать его в качестве аргемунта.
     @Override
     public void removeStaleMatches(long expirationMinutes) {
+        // Удаление внутри итерации по самой Map работает только потому, что используется ConcurrentHashMap.
+            // Если реализация хранилища по какой-то причине поменяется можно забыть внести изменения в этот метод
+            // и он упадёт с ConcurrentModificationException.
+            // Лучше использовать более безопасный и современный подход:
+        /*
+        AtomicInteger removedCount = new AtomicInteger(0);
+        matches.values().removeIf(matchScore -> {
+            if (matchScore.getLastActivityAt().isBefore(thresholdTime)) {
+                removedCount.incrementAndGet();
+                return true;
+            }
+            return false;
+        });
+         */
+
         int removedCount = 0;
         Instant thresholdTime = Instant.now().minus(expirationMinutes, ChronoUnit.MINUTES);
 

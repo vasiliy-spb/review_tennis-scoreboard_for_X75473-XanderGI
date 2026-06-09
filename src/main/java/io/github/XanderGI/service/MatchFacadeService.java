@@ -11,10 +11,20 @@ import java.util.UUID;
 @Slf4j
 @RequiredArgsConstructor
 public class MatchFacadeService {
+
+    // TODO: Нет интерфейса для этого класса. (см. файл "service.md" в этом же пакете)
+
+    // TODO: Класс способствует смешению слоёв — передаёт доменную модель в слой контроллеров.
+        // (см. файл "separation-of-concerns-principle.md" в этом же пакете)
+
+    // Класс работает с объектами текущих матчей (MatchScore), поэтому его логику можно перенести в OngoingMatchesService.
+
     private final OngoingMatchesService ongoingMatchesService;
     private final MatchScoreCalculationService calculationMatchService;
     private final FinishedMatchesPersistenceService finishedMatchesService;
 
+    // Неинформативное название метода
+    // TODO: Метод не должен возвращать доменную модель
     public MatchScore playRally(UUID matchId, Integer playerId) {
         MatchScore matchScore = ongoingMatchesService.get(matchId)
                 .orElseThrow(() -> new MatchNotFoundException("Match not found"));

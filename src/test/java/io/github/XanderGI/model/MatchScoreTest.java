@@ -7,6 +7,13 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class MatchScoreTest {
+
+    // После проведения декомпозиции и рефакторинга доменных моделей, также следует изменить тесты для этой части логики.
+
+    // Тестирование основной бизнес-логики должно быть возможным без классов JPA Entity
+
+    // TODO: Тесты не находят баг в логике тай-брейка
+
     private final static Integer PLAYER_ONE_ID = 1;
     private final static Integer PLAYER_TWO_ID = 2;
     private Player playerOne;

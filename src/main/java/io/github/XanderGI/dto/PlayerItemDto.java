@@ -6,6 +6,9 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public class PlayerItemDto {
+
+    // Можно сделать record
+
     private final Integer id;
     private final String name;
     private final String displayPoints;

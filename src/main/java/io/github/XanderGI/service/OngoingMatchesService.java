@@ -14,10 +14,22 @@ import java.util.UUID;
 @Slf4j
 @RequiredArgsConstructor
 public class OngoingMatchesService {
+
+    // TODO: Нет интерфейса для этого класса. (см. файл "service.md" в этом же пакете)
+
+    // TODO: Класс отвечает за создание объекта текущего матча (доменной модели).
+        // При этом он способствует смешению слоёв — передаёт JPA Entity в доменную модель.
+        // (см. файл "separation-of-concerns-principle.md" в этом же пакете)
+
     private final OngoingMatchRepository ongoingMatchRepository;
     private final PlayerService playerService;
 
+    // TODO: Этот метод должен выполняться в транзакции
     public UUID create(String nameOne, String nameTwo) {
+
+        // Можно вынести этот if во вспомогательный метод,
+            // а также проверять совпадение имён после .trim(),
+            // чтобы имена "Петя" и "Петя  " считались одинаковыми.
         if (nameOne.equalsIgnoreCase(nameTwo)) {
             throw new InvalidMatchException("The names of the players must be different");
         }
@@ -25,6 +37,7 @@ public class OngoingMatchesService {
         Player playerOne = playerService.getOrCreatePlayer(nameOne);
         Player playerTwo = playerService.getOrCreatePlayer(nameTwo);
 
+        // TODO: Не нужно передавать JPA Entity в доменные модели
         MatchScore matchScore = new MatchScore(
                 playerOne,
                 playerTwo,

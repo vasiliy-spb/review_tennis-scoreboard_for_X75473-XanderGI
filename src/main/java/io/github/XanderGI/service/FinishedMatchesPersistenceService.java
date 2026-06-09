@@ -18,6 +18,11 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 public class FinishedMatchesPersistenceService {
+
+    // TODO: Нет интерфейса для этого класса. (см. файл "service.md" в этом же пакете)
+
+    // Размер страницы по умолчанию более уместно хранить в сервлете, так как в идеале он должен приходить с фронтенда.
+        // А сервис должен принимать это значение в качестве аргумента в методы.
     private static final int PAGE_SIZE = 5;
     private final MatchRepository matchRepository;
     private final TransactionRunner transactionRunner;
@@ -34,6 +39,9 @@ public class FinishedMatchesPersistenceService {
             String firstPlayerName = matchScore.getPlayerOne().getName();
             String secondPlayerName = matchScore.getPlayerTwo().getName();
             log.info("Match successfully saved into DB: {} vs {}", firstPlayerName, secondPlayerName);
+
+        // Стоит ловить кастомные исключения, в которые заворачиваются иcключения, специфичные для DAO слоя
+            // (например, DataAccessException), а все остальные пропускать дальше к глобальному обработчику.
         } catch (RuntimeException e) {
             throw new MatchPersistenceException("Couldn't finishMatch match", e);
         }
@@ -50,9 +58,12 @@ public class FinishedMatchesPersistenceService {
             return transactionRunner.execute(() -> {
                         List<String> tokens = SearchUtil.tokenize(filterName);
 
+                        // Можно добавить в маппер метод, который принимает список Entity и возвращает список DTO
                         List<MatchDto> matches = matchRepository.findMatches(offset, PAGE_SIZE, tokens).stream()
                                 .map(mapper::toMatchDto)
                                 .toList();
+
+                        // Лучше использовать примитивный тип long
                         Long countOfMatches = matchRepository.countMatchesByTokens(tokens);
                         int totalPages = calculateTotalPages(countOfMatches);
 
@@ -62,6 +73,9 @@ public class FinishedMatchesPersistenceService {
                         );
                     }
             );
+
+        // Стоит ловить кастомные исключения, в которые заворачиваются иcключения, специфичные для DAO слоя
+            // (например, DataAccessException), а все остальные пропускать дальше к глобальному обработчику.
         } catch (RuntimeException e) {
             String message = String.format("Couldn't get matches for page %d with filter '%s'", page, filterName);
             throw new MatchRepositoryException(message, e);
@@ -72,6 +86,7 @@ public class FinishedMatchesPersistenceService {
         return (page - 1) * PAGE_SIZE;
     }
 
+    // Лучше принимать примитивный тип long, чтобы преобразование во время вычисления не могло выбросить NullPointerException
     private int calculateTotalPages(Long countOfMatches) {
         return (int) Math.ceil((double) countOfMatches / PAGE_SIZE);
     }

@@ -9,6 +9,9 @@ import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SearchUtil {
+
+    // Класс спроектирован как утилитный, но при этом не объявлен как final.
+
     public static List<String> tokenize(String filterName) {
         if (filterName == null || filterName.isBlank()) {
             return Collections.emptyList();

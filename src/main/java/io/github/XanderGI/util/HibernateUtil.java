@@ -12,6 +12,14 @@ import org.hibernate.cfg.Configuration;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class HibernateUtil {
+
+    // Класс спроектирован как утилитный, но при этом не объявлен как final.
+
+    // Класс является реализацией антипаттерна Service Locator.
+        // Это затрудняет тестирование и создаёт неявные зависимости в коде.
+        // Лучше перейти на внедрение зависимостей (Dependency Injection),
+        // где экземпляр SessionFactory создаётся один раз и передаётся в конструкторы зависимых компонентов.
+
     private static final Configuration configuration = new Configuration();
     @Getter
     private static SessionFactory sessionFactory;

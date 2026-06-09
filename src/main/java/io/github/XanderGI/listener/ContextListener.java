@@ -63,6 +63,7 @@ public class ContextListener implements ServletContextListener {
                     config.cleanupPeriodMinutes(),
                     TimeUnit.MINUTES);
 
+            // Для помещения объектов в контекст можно использовать "естественные константы" — ClassName.class.getSimpleName() или ClassName.class.getName()
             sce.getServletContext().setAttribute(ONGOING_MATCHES_SERVICE, ongoingMatchesService);
             sce.getServletContext().setAttribute(FINISHED_MATCHES_SERVICE, finishedMatchesService);
             sce.getServletContext().setAttribute(MATCH_FACADE_SERVICE, matchFacadeService);
@@ -78,6 +79,10 @@ public class ContextListener implements ServletContextListener {
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
         if (scheduler != null) {
+
+            // Можно использовать более мягкую процедуру остановки:
+                // сначала инициировать остановку с помощью `shutdown()`, потом дать время на завершение задач
+                // (через awaitTermination()) и только после этого вызывать shutdownNow().
             scheduler.shutdownNow();
         }
 

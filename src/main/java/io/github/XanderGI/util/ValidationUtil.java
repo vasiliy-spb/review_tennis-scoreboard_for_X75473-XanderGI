@@ -8,6 +8,12 @@ import java.util.UUID;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ValidationUtil {
+
+    // Класс спроектирован как утилитный, но при этом не объявлен как final.
+
+    // Методы валидируют и парсят значения — это нарушает Принцип единой ответственности (SRP).
+        // Валидатор должен заниматься только валидацией.
+
     private static final Integer MAX_NAME_LENGTH = 50;
     private static final String NAME_PATTERN = "^[a-zA-Z0-9\\s-']+$";
 
@@ -34,6 +40,8 @@ public class ValidationUtil {
         }
 
         if (!firstName.matches(NAME_PATTERN) || !secondName.matches(NAME_PATTERN)) {
+
+            // Более точным было бы сообщение "Player name can only contain latin letters, numbers, spaces, hyphens, and apostrophes."
             throw new InvalidMatchException("The name of the players must contain only the latin alphabet");
         }
     }
